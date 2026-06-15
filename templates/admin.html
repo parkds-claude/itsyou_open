@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>itsyou · 어드민</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+      background: #f2f2f7; color: #1c1c1e; min-height: 100vh;
+    }
+
+    /* ── 인증 화면 ── */
+    #auth-screen {
+      display: flex; align-items: center; justify-content: center; min-height: 100vh;
+    }
+    .auth-box {
+      background: #fff; border-radius: 20px; padding: 40px 32px;
+      box-shadow: 0 4px 30px rgba(0,0,0,.1); width: 320px; text-align: center;
+    }
+    .auth-logo { font-size: 40px; margin-bottom: 12px; }
+    .auth-box h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .auth-box p { font-size: 14px; color: #8e8e93; margin-bottom: 24px; }
+    .auth-box input {
+      width: 100%; padding: 13px 16px; border: 2px solid #e5e5ea;
+      border-radius: 12px; font-size: 16px; outline: none;
+      transition: border-color .15s; margin-bottom: 12px;
+    }
+    .auth-box input:focus { border-color: #007aff; }
+    .auth-box button {
+      width: 100%; padding: 14px; background: #007aff; color: #fff;
+      border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer;
+    }
+    .auth-err { font-size: 13px; color: #ff3b30; margin-top: 8px; min-height: 18px; }
+
+    /* ── 메인 ── */
+    #admin-main { display: none; }
+    #admin-main.visible { display: block; }
+
+    header {
+      background: #fff; border-bottom: 1px solid #e5e5ea;
+      padding: 14px 24px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 10;
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    header h1 { font-size: 18px; font-weight: 700; }
+    .header-badge {
+      background: #f2f2f7; color: #8e8e93;
+      font-size: 12px; padding: 4px 10px; border-radius: 20px;
+    }
+    .btn-logout {
+      background: none; border: none; color: #ff3b30;
+      font-size: 13px; cursor: pointer; padding: 6px 10px;
+      border-radius: 8px; transition: background .15s;
+    }
+    .btn-logout:hover { background: #fff0ef; }
+
+    main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+
+    .section-title {
+      font-size: 15px; font-weight: 600; color: #3c3c43;
+      margin-bottom: 14px; padding-bottom: 8px;
+      border-bottom: 1.5px solid #e5e5ea;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ── 프리셋 그리드 ── */
+    #preset-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px; margin-bottom: 40px;
+    }
+    .loading-text { text-align: center; color: #8e8e93; padding: 40px 0; grid-column: 1/-1; }
+
+    .preset-card {
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+      overflow: hidden; transition: box-shadow .2s;
+    }
+    .preset-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+
+    .card-thumb {
+      width: 100%; height: 150px; object-fit: cover; display: block; background: #e5e5ea;
+    }
+    .card-thumb-empty {
+      width: 100%; height: 150px;
+      background: linear-gradient(135deg, #e5e5ea 0%, #d1d1d6 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; color: #aeaeb2;
+    }
+
+    .card-body { padding: 14px 16px; }
+    .card-name { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+    .card-id {
+      font-size: 11px; color: #8e8e93; margin-bottom: 8px;
+    }
+    .card-id code {
+      background: #f2f2f7; border-radius: 5px;
+      padding: 1px 6px; font-family: 'SF Mono', Menlo, monospace;
+    }
+    .card-prompt {
+      font-size: 12px; color: #636366; line-height: 1.55;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden; margin-bottom: 12px;
+    }
+
+    .card-actions { display: flex; gap: 6px; }
+    .btn-card {
+      border: none; border-radius: 10px; cursor: pointer;
+      padding: 8px 0; font-size: 13px; font-weight: 500;
+      transition: background .15s; flex: 1; text-align: center;
+    }
+    .btn-up, .btn-dn { flex: 0 0 36px; font-size: 16px; background: #f2f2f7; color: #3c3c43; }
+    .btn-up:hover, .btn-dn:hover { background: #e5e5ea; }
+    .btn-up:disabled, .btn-dn:disabled { opacity: .28; cursor: not-allowed; }
+    .btn-edit { background: #e8f0fe; color: #1a73e8; }
+    .btn-edit:hover { background: #d2e3fc; }
+    .btn-del  { background: #fdecea; color: #d93025; }
+    .btn-del:hover  { background: #fad2cf; }
+
+    /* ── 추가 폼 ── */
+    #add-form {
+      background: #fff; border-radius: 20px; padding: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07); margin-bottom: 40px;
+    }
+    .form-row { margin-bottom: 14px; }
+    .form-row label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: #3c3c43; margin-bottom: 5px;
+    }
+    .form-row input, .form-row textarea {
+      width: 100%; padding: 11px 14px; border: 1.5px solid #e5e5ea;
+      border-radius: 12px; font-size: 14px; font-family: inherit;
+      outline: none; transition: border-color .15s; resize: vertical;
+    }
+    .form-row input:focus, .form-row textarea:focus { border-color: #007aff; }
+    .form-row textarea { min-height: 110px; }
+    .form-hint { font-size: 11px; color: #8e8e93; margin-top: 4px; }
+    .form-inline { display: flex; align-items: center; gap: 8px; }
+    .form-inline input[type=checkbox] { width: 17px; height: 17px; cursor: pointer; }
+    .form-inline label { font-size: 13px; font-weight: 500; color: #3c3c43; margin: 0; cursor: pointer; }
+
+    .btn-add {
+      width: 100%; padding: 13px; background: #34c759; color: #fff;
+      border: none; border-radius: 12px; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: background .15s; margin-top: 4px;
+    }
+    .btn-add:hover { background: #2db34a; }
+    .btn-add:disabled { background: #d1d1d6; cursor: not-allowed; }
+
+    /* ── 편집 모달 ── */
+    #modal-edit {
+      position: fixed; inset: 0; background: rgba(0,0,0,.55);
+      display: flex; align-items: center; justify-content: center; z-index: 200;
+    }
+    #modal-edit.hidden { display: none; }
+    .modal-box {
+      background: #fff; border-radius: 20px; padding: 28px;
+      width: 90%; max-width: 560px; max-height: 88vh; overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    }
+    .modal-box h3 { font-size: 17px; font-weight: 700; margin-bottom: 20px; }
+    .modal-footer { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-cancel {
+      flex: 1; padding: 13px; background: #f2f2f7; color: #3c3c43;
+      border: none; border-radius: 12px; font-size: 15px; cursor: pointer;
+    }
+    .btn-save {
+      flex: 2; padding: 13px; background: #007aff; color: #fff;
+      border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .btn-save:disabled { background: #d1d1d6; cursor: not-allowed; }
+
+    /* ── 토스트 ── */
+    #toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      background: #1c1c1e; color: #fff; padding: 11px 22px;
+      border-radius: 24px; font-size: 14px; z-index: 300;
+      opacity: 0; transition: opacity .25s; pointer-events: none; white-space: nowrap;
+    }
+    #toast.show { opacity: 1; }
+    #toast.err { background: #ff3b30; }
+  </style>
+</head>
+<body>
+
+  <!-- 인증 화면 -->
+  <div id="auth-screen">
+    <div class="auth-box">
+      <div class="auth-logo">🎨</div>
+      <h1>itsyou 어드민</h1>
+      <p>프리셋 관리 콘솔</p>
+      <input type="password" id="key-input" placeholder="관리자 키 입력" autocomplete="off">
+      <button onclick="login()">접속</button>
+      <p class="auth-err" id="auth-err"></p>
+    </div>
+  </div>
+
+  <!-- 메인 -->
+  <div id="admin-main">
+    <header>
+      <div class="header-left">
+        <h1>🎨 itsyou 어드민</h1>
+        <span class="header-badge" id="preset-count">프리셋 0개</span>
+      </div>
+      <button class="btn-logout" onclick="logout()">로그아웃</button>
+    </header>
+    <main>
+      <!-- 행사 로고 -->
+      <p class="section-title">🎪 행사 로고</p>
+      <div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:32px;">
+        <div id="logo-preview-wrap" style="margin-bottom:16px;text-align:center;">
+          <img id="logo-preview-img" style="max-height:100px;max-width:60%;object-fit:contain;display:none;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);" alt="현재 로고">
+          <div id="logo-empty-msg" style="color:#8e8e93;font-size:14px;padding:20px 0;">설정된 로고가 없습니다</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <label style="flex:1;min-width:200px;">
+            <input type="file" id="logo-file-input" accept="image/*" style="display:none;" onchange="onLogoFileChange(this)">
+            <div id="logo-file-label" onclick="document.getElementById('logo-file-input').click()"
+                 style="padding:12px 20px;border:2px dashed #d1d1d6;border-radius:12px;cursor:pointer;
+                        text-align:center;font-size:14px;color:#636366;transition:border-color .15s;">
+              📁 이미지 선택 (JPG · PNG, 최대 1MB)
+            </div>
+          </label>
+          <button id="btn-logo-upload" class="btn-submit" style="flex:0 0 auto;width:auto;padding:12px 24px;margin-top:0;"
+                  onclick="uploadLogo()" disabled>업로드</button>
+          <button onclick="deleteLogo()"
+                  style="flex:0 0 auto;padding:12px 20px;background:#fdecea;color:#d93025;
+                         border:none;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;">
+            🗑️ 로고 삭제
+          </button>
+        </div>
+        <p style="font-size:12px;color:#aeaeb2;margin-top:10px;">
+          ℹ️ 서버 재배포 시 초기화됩니다. 행사 당일 업로드 후 사용하세요.
+        </p>
+      </div>
+
+      <!-- 프리셋 목록 -->
+      <p class="section-title">📋 프리셋 목록</p>
+      <div id="preset-grid">
+        <div class="loading-text">불러오는 중...</div>
+      </div>
+
+      <p class="section-title">➕ 새 프리셋 추가</p>
+      <div id="add-form">
+        <div class="form-row">
+          <label>이름 <span style="color:#ff3b30">*</span></label>
+          <input type="text" id="add-name" placeholder="예: 지브리 수채">
+        </div>
+        <div class="form-row">
+          <label>ID (영문, 비워두면 자동 생성)</label>
+          <input type="text" id="add-id" placeholder="예: watercolor-anime">
+          <p class="form-hint">영문 소문자·숫자·밑줄만, 24자 이하</p>
+        </div>
+        <div class="form-row">
+          <label>프롬프트 <span style="color:#ff3b30">*</span></label>
+          <textarea id="add-prompt" placeholder="Gemini에 전달될 이미지 변환 지시문 (영문 권장)"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-inline">
+            <input type="checkbox" id="add-portrait">
+            <label for="add-portrait">인물 초상 헤더 자동 추가 (PORTRAIT 공통 지시)</label>
+          </div>
+          <p class="form-hint" style="margin-top:6px">체크 시 프롬프트 앞에 인물·얼굴 보존 공통 지시가 붙습니다</p>
+        </div>
+        <button class="btn-add" id="btn-add" onclick="addPreset()">프리셋 추가</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- 편집 모달 -->
+  <div id="modal-edit" class="hidden">
+    <div class="modal-box">
+      <h3>✏️ 프리셋 편집</h3>
+      <div class="form-row">
+        <label>이름</label>
+        <input type="text" id="edit-name">
+      </div>
+      <div class="form-row">
+        <label>프롬프트</label>
+        <textarea id="edit-prompt" style="min-height:220px"></textarea>
+      </div>
+      <input type="hidden" id="edit-pid">
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeEdit()">취소</button>
+        <button class="btn-save" id="btn-save" onclick="saveEdit()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    let adminKey = sessionStorage.getItem("itsyou_admin_key") || "";
+    let presets = [];
+
+    // ── 인증 ────────────────────────────────────────────────────────────────
+    async function init() {
+      const res = await fetch("/admin/api/auth",
+        { headers: adminKey ? {"X-Admin-Key": adminKey} : {} });
+      if (res.ok) { showAdmin(); }
+      else { showAuth(); }
+    }
+
+    async function login() {
+      const key = document.getElementById("key-input").value;
+      const res = await fetch("/admin/api/auth",
+        { headers: key ? {"X-Admin-Key": key} : {} });
+      if (res.ok) {
+        adminKey = key;
+        sessionStorage.setItem("itsyou_admin_key", key);
+        document.getElementById("auth-err").textContent = "";
+        showAdmin();
+      } else {
+        document.getElementById("auth-err").textContent = "키가 올바르지 않습니다.";
+      }
+    }
+
+    function logout() {
+      adminKey = "";
+      sessionStorage.removeItem("itsyou_admin_key");
+      document.getElementById("key-input").value = "";
+      document.getElementById("auth-err").textContent = "";
+      document.getElementById("admin-main").classList.remove("visible");
+      document.getElementById("auth-screen").style.display = "flex";
+    }
+
+    function showAuth() {
+      document.getElementById("auth-screen").style.display = "flex";
+      document.getElementById("admin-main").classList.remove("visible");
+    }
+    function showAdmin() {
+      document.getElementById("auth-screen").style.display = "none";
+      document.getElementById("admin-main").classList.add("visible");
+      loadPresets();
+      loadLogo();
+    }
+
+    // ── API 헬퍼 ────────────────────────────────────────────────────────────
+    function hdrs(json = false) {
+      const h = {};
+      if (adminKey) h["X-Admin-Key"] = adminKey;
+      if (json) h["Content-Type"] = "application/json";
+      return h;
+    }
+
+    async function apiCall(method, path, body) {
+      const opts = { method, headers: hdrs(!!body) };
+      if (body) opts.body = JSON.stringify(body);
+      const res = await fetch(path, opts);
+      if (res.status === 401) { showAuth(); return null; }
+      return res;
+    }
+
+    // ── 프리셋 목록 ─────────────────────────────────────────────────────────
+    async function loadPresets() {
+      const res = await apiCall("GET", "/admin/api/presets");
+      if (!res || !res.ok) { toast("목록 로드 실패", true); return; }
+      presets = await res.json();
+      renderGrid();
+    }
+
+    function renderGrid() {
+      document.getElementById("preset-count").textContent = `프리셋 ${presets.length}개`;
+      const grid = document.getElementById("preset-grid");
+      if (!presets.length) {
+        grid.innerHTML = '<div class="loading-text">프리셋이 없습니다. 아래에서 추가하세요.</div>';
+        return;
+      }
+      grid.innerHTML = presets.map((p, i) => `
+        <div class="preset-card">
+          ${p.thumb_url
+            ? `<img class="card-thumb" src="${p.thumb_url}" alt="${esc(p.name)}"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+            : ""}
+          <div class="card-thumb-empty" style="display:${p.thumb_url ? "none" : "flex"}">🖼️</div>
+          <div class="card-body">
+            <div class="card-name">${esc(p.name)}</div>
+            <div class="card-id"><code>${esc(p.id)}</code></div>
+            <div class="card-prompt">${esc(p.prompt)}</div>
+            <div class="card-actions">
+              <button class="btn-card btn-up" onclick="move(${i},-1)" ${i===0?"disabled":""} title="위로">▲</button>
+              <button class="btn-card btn-dn" onclick="move(${i},1)"  ${i===presets.length-1?"disabled":""} title="아래로">▼</button>
+              <button class="btn-card btn-edit" onclick="openEdit('${escAttr(p.id)}')">✏️ 편집</button>
+              <button class="btn-card btn-del"  onclick="delPreset('${escAttr(p.id)}','${escAttr(p.name)}')">🗑️ 삭제</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function move(idx, dir) {
+      const ni = idx + dir;
+      if (ni < 0 || ni >= presets.length) return;
+      [presets[idx], presets[ni]] = [presets[ni], presets[idx]];
+      const res = await apiCall("POST", "/admin/api/presets-order", { ids: presets.map(p => p.id) });
+      if (res && res.ok) renderGrid();
+      else { toast("순서 변경 실패", true); await loadPresets(); }
+    }
+
+    async function delPreset(pid, name) {
+      if (!confirm(`"${name}" 프리셋을 삭제할까요?`)) return;
+      const res = await apiCall("DELETE", `/admin/api/presets/${pid}`);
+      if (res && res.ok) { toast("삭제했습니다"); loadPresets(); }
+      else toast("삭제 실패", true);
+    }
+
+    async function addPreset() {
+      const name   = document.getElementById("add-name").value.trim();
+      const id     = document.getElementById("add-id").value.trim();
+      const prompt = document.getElementById("add-prompt").value.trim();
+      const portrait = document.getElementById("add-portrait").checked;
+      if (!name || !prompt) { toast("이름과 프롬프트를 입력하세요", true); return; }
+      const btn = document.getElementById("btn-add");
+      btn.disabled = true; btn.textContent = "추가 중...";
+      const res = await apiCall("POST", "/admin/api/presets", { name, id, prompt, portrait });
+      btn.disabled = false; btn.textContent = "프리셋 추가";
+      if (res && res.ok) {
+        toast("프리셋이 추가됐습니다");
+        ["add-name","add-id","add-prompt"].forEach(id => document.getElementById(id).value="");
+        document.getElementById("add-portrait").checked = false;
+        loadPresets();
+      } else {
+        const d = await res?.json().catch(() => ({}));
+        toast("추가 실패: " + (d?.error || "오류"), true);
+      }
+    }
+
+    // ── 편집 모달 ───────────────────────────────────────────────────────────
+    function openEdit(pid) {
+      const p = presets.find(x => x.id === pid);
+      if (!p) return;
+      document.getElementById("edit-pid").value = pid;
+      document.getElementById("edit-name").value = p.name;
+      document.getElementById("edit-prompt").value = p.prompt;
+      document.getElementById("modal-edit").classList.remove("hidden");
+      document.getElementById("edit-name").focus();
+    }
+    function closeEdit() {
+      document.getElementById("modal-edit").classList.add("hidden");
+    }
+    async function saveEdit() {
+      const pid    = document.getElementById("edit-pid").value;
+      const name   = document.getElementById("edit-name").value.trim();
+      const prompt = document.getElementById("edit-prompt").value.trim();
+      if (!name || !prompt) { toast("이름과 프롬프트를 입력하세요", true); return; }
+      const btn = document.getElementById("btn-save");
+      btn.disabled = true;
+      const res = await apiCall("PUT", `/admin/api/presets/${pid}`, { name, prompt });
+      btn.disabled = false;
+      if (res && res.ok) { toast("저장했습니다"); closeEdit(); loadPresets(); }
+      else toast("저장 실패", true);
+    }
+
+    // ── 유틸 ────────────────────────────────────────────────────────────────
+    function esc(s) {
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+    function escAttr(s) { return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'"); }
+
+    let _toastTimer;
+    function toast(msg, isErr = false) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.toggle("err", isErr);
+      el.classList.add("show");
+      clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(() => el.classList.remove("show"), 2800);
+    }
+
+    // 모달 바깥 클릭으로 닫기
+    document.getElementById("modal-edit").addEventListener("click", e => {
+      if (e.target === e.currentTarget) closeEdit();
+    });
+    document.getElementById("key-input").addEventListener("keydown", e => {
+      if (e.key === "Enter") login();
+    });
+
+    // ── 행사 로고 ────────────────────────────────────────────────────────────
+    let _logoFile = null;
+
+    async function loadLogo() {
+      try {
+        const data = await fetch("/event-config").then(r => r.json());
+        const preview = document.getElementById("logo-preview-img");
+        const emptyMsg = document.getElementById("logo-empty-msg");
+        if (data.has_logo) {
+          preview.src = "/event-logo?" + Date.now();
+          preview.style.display = "block";
+          emptyMsg.style.display = "none";
+        } else {
+          preview.style.display = "none";
+          emptyMsg.style.display = "block";
+        }
+      } catch {}
+    }
+
+    function onLogoFileChange(input) {
+      const file = input.files[0];
+      if (!file) return;
+      _logoFile = file;
+      document.getElementById("logo-file-label").textContent = "✅ " + file.name;
+      document.getElementById("btn-logo-upload").disabled = false;
+    }
+
+    async function uploadLogo() {
+      if (!_logoFile) return;
+      const btn = document.getElementById("btn-logo-upload");
+      btn.disabled = true; btn.textContent = "업로드 중...";
+      const form = new FormData();
+      form.append("logo", _logoFile);
+      const res = await fetch("/admin/api/event-config/logo", {
+        method: "POST",
+        headers: adminKey ? {"X-Admin-Key": adminKey} : {},
+        body: form,
+      });
+      btn.textContent = "업로드";
+      if (res.ok) {
+        toast("로고가 업로드됐습니다");
+        _logoFile = null;
+        document.getElementById("logo-file-input").value = "";
+        document.getElementById("logo-file-label").textContent = "📁 이미지 선택 (JPG · PNG, 최대 1MB)";
+        loadLogo();
+      } else {
+        const d = await res.json().catch(() => ({}));
+        toast("업로드 실패: " + (d.error || res.status), true);
+        btn.disabled = false;
+      }
+    }
+
+    async function deleteLogo() {
+      if (!confirm("로고를 삭제할까요?")) return;
+      const res = await apiCall("DELETE", "/admin/api/event-config/logo");
+      if (res && res.ok) { toast("로고를 삭제했습니다"); loadLogo(); }
+      else toast("삭제 실패", true);
+    }
+
+    init();
+  </script>
+</body>
+</html>

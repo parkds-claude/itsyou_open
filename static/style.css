@@ -1,0 +1,346 @@
+/* ── 기본 리셋 ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+  color: #fff;
+}
+
+/* 터치 딜레이 제거 (안드로이드 300ms 제거) */
+button, .preset-chip, .share-btn, .retry-btn, .icon-btn, .shutter-btn, .modal-close {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+/* ── 화면 전환 ── */
+.screen { display: none; width: 100%; height: 100dvh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ── 화면 1: 카메라 ── */
+.cam-header {
+  position: absolute; top: 0; left: 0; right: 0;
+  z-index: 10; padding: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.icon-btn {
+  background: rgba(0,0,0,.5); border: none; color: #fff;
+  font-size: 22px; width: 48px; height: 48px;
+  border-radius: 50%; cursor: pointer;
+}
+.cam-viewport { position: absolute; inset: 0; overflow: hidden; }
+#video {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block;
+}
+#video.mirror { transform: scaleX(-1); }
+
+.cam-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 20px;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0,0,0,.6);
+  letter-spacing: .5px;
+  text-align: center;
+  line-height: 1.2;
+  pointer-events: none;
+}
+.cam-title span {
+  display: block;
+  font-size: 13px;
+  font-style: normal;
+  letter-spacing: 2px;
+  opacity: .8;
+  text-transform: uppercase;
+}
+
+.shutter-hint {
+  color: rgba(255,255,255,.85);
+  font-size: 15px; font-weight: 500;
+  text-align: center;
+  letter-spacing: .3px;
+}
+.shutter-hint.hidden { display: none; }
+
+/* ── 카운트다운 오버레이 ── */
+.countdown-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.35);
+  z-index: 20;
+}
+.countdown-overlay.hidden { display: none; }
+#countdown-num {
+  font-size: 200px; font-weight: 900; color: #fff;
+  text-shadow: 0 0 40px rgba(0,0,0,.8);
+  line-height: 1;
+  animation: countdown-pop .9s ease-out;
+}
+@keyframes countdown-pop {
+  0%   { transform: scale(1.4); opacity: 0; }
+  20%  { transform: scale(1.0); opacity: 1; }
+  80%  { transform: scale(1.0); opacity: 1; }
+  100% { transform: scale(0.7); opacity: 0; }
+}
+/* 셔터 플래시 */
+.shutter-flash {
+  position: fixed; inset: 0;
+  background: #fff; z-index: 100;
+  animation: flash .25s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes flash {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.cam-footer {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 10;
+  background: transparent;
+  padding: 14px 16px calc(32px + env(safe-area-inset-bottom, 0));
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+
+/* 프리셋 카드 가로 스크롤 */
+.preset-list {
+  display: flex; gap: 10px; overflow-x: auto;
+  width: 100%; padding: 4px 2px 6px;
+  scrollbar-width: none;
+}
+.preset-list::-webkit-scrollbar { display: none; }
+.preset-chip {
+  flex-shrink: 0;
+  width: 76px;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all .15s;
+  display: flex; flex-direction: column; align-items: center;
+}
+.preset-chip:active { transform: scale(.95); }
+.preset-chip.selected {
+  border-color: #fff;
+  background: rgba(255,255,255,.22);
+  box-shadow: 0 0 0 3px rgba(255,255,255,.2);
+}
+.preset-thumb {
+  width: 100%; height: 62px;
+  object-fit: cover; display: block;
+  border-radius: 12px 12px 0 0;
+}
+.preset-label {
+  width: 100%; padding: 5px 4px 6px;
+  font-size: 11px; font-weight: 500; color: #fff;
+  text-align: center; line-height: 1.3;
+  word-break: keep-all;
+}
+
+/* 셔터 */
+.shutter-btn {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: #e8003a; border: 5px solid rgba(255,255,255,.4);
+  font-size: 28px; cursor: pointer;
+  box-shadow: 0 0 0 5px rgba(232,0,58,.3);
+  transition: transform .1s;
+}
+.shutter-btn:active { transform: scale(.92); }
+
+/* ── 화면 2: 로딩 ── */
+.loading-wrap {
+  flex: 1; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.loading-preview {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: blur(20px); transform: scale(1.08);
+}
+.loading-overlay {
+  position: relative; z-index: 2;
+  text-align: center;
+  background: rgba(0,0,0,.55);
+  padding: 36px 40px; border-radius: 20px;
+}
+.spinner {
+  width: 48px; height: 48px;
+  border: 4px solid rgba(255,255,255,.25);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin .9s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.loading-sub { font-size: 14px; opacity: .65; }
+
+/* ── 화면 3: 결과 ── */
+.result-img-wrap {
+  flex: 1; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: #111;
+}
+.result-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+.result-footer {
+  background: rgba(0,0,0,.92);
+  padding: 14px 16px 28px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.btn-row { display: flex; gap: 10px; }
+.share-btn {
+  flex: 1; padding: 15px 8px; border-radius: 14px; border: none;
+  background: rgba(255,255,255,.13); color: #fff;
+  font-size: 15px; font-weight: 500; cursor: pointer;
+  transition: background .15s;
+}
+.share-btn:active { background: rgba(255,255,255,.22); }
+.share-btn.locked { opacity: .35; cursor: not-allowed; }
+.retry-btn {
+  width: 100%; padding: 15px; border-radius: 14px;
+  border: 1.5px solid rgba(255,255,255,.25); background: transparent;
+  color: rgba(255,255,255,.75); font-size: 15px; cursor: pointer;
+}
+
+.auto-return-hint {
+  text-align: center; font-size: 12px;
+  color: rgba(255,255,255,.35); margin-top: 8px;
+}
+
+/* ── 모달 ── */
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200;
+}
+.modal.hidden { display: none; }
+.modal-box {
+  background: #fff; color: #111;
+  border-radius: 24px; padding: 32px 28px;
+  width: 88%; max-width: 360px;
+  text-align: center;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.modal-box h3 { font-size: 20px; font-weight: 700; }
+.qr-container { display: flex; justify-content: center; }
+.modal-sub { font-size: 14px; color: #666; }
+.email-input {
+  width: 100%; padding: 13px 16px;
+  border: 2px solid #e0e0e0; border-radius: 12px;
+  font-size: 16px; outline: none;
+  transition: border-color .15s;
+}
+.email-input:focus { border-color: #007aff; }
+.modal-send {
+  width: 100%; padding: 15px;
+  background: #007aff; color: #fff;
+  border: none; border-radius: 12px;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+}
+.modal-send:disabled { opacity: .5; cursor: not-allowed; }
+.email-status { font-size: 14px; color: #555; min-height: 18px; }
+.modal-close {
+  background: none; border: none;
+  color: #999; font-size: 15px; cursor: pointer;
+}
+
+/* ── 행사 로고 바 ── */
+.event-logo-bar {
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, .72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.event-logo-bar.hidden { display: none; }
+.event-logo-img {
+  max-height: 56px;
+  max-width: 70%;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 6px rgba(0,0,0,.4));
+}
+
+/* 태블릿에서 로고 크게 */
+@media (min-width: 768px) {
+  .event-logo-bar { padding: 14px 24px; }
+  .event-logo-img { max-height: 72px; }
+}
+
+/* ── 태블릿 (768px 이상) ── */
+@media (min-width: 768px) {
+  /* 프리셋 카드 확대 */
+  .preset-chip  { width: 100px; }
+  .preset-thumb { height: 82px; }
+  .preset-label { font-size: 13px; padding: 6px 4px 8px; }
+
+  /* 셔터 확대 */
+  .shutter-btn { width: 88px; height: 88px; font-size: 36px; }
+
+  /* 상단 전환 버튼 */
+  .icon-btn { width: 56px; height: 56px; font-size: 26px; }
+
+  /* 결과 화면 버튼 */
+  .share-btn  { font-size: 17px; padding: 18px 8px; border-radius: 16px; }
+  .retry-btn  { font-size: 17px; padding: 18px; }
+
+  /* 로딩 텍스트 */
+  .loading-title { font-size: 26px; }
+  .loading-sub   { font-size: 16px; }
+
+  /* 모달 */
+  .modal-box    { max-width: 480px; padding: 40px 36px; gap: 20px; }
+  .modal-box h3 { font-size: 22px; }
+  .email-input  { font-size: 18px; padding: 16px; }
+  .modal-send   { padding: 18px; font-size: 18px; }
+  .modal-close  { font-size: 17px; }
+}
+
+/* ── 태블릿 가로 모드: 결과 화면 좌우 분리 ── */
+@media (orientation: landscape) and (min-width: 768px) {
+  #screen-result { flex-direction: row; }
+  .result-img-wrap { flex: 1; }
+  .result-footer {
+    width: 260px; flex-shrink: 0;
+    padding: 24px 16px;
+    justify-content: center;
+  }
+}
+
+/* 화면 0: 키 설정 */
+#screen-setup { background: #fff; color: #111; justify-content: center; }
+.setup-wrap { max-width: 420px; margin: 0 auto; padding: 48px 24px;
+  display: flex; flex-direction: column; gap: 16px; text-align: center; }
+.setup-title { font-size: 40px; font-style: italic;
+  font-family: 'Playfair Display', Georgia, serif; }
+.setup-sub { font-size: 15px; color: #666; }
+.setup-label { font-size: 14px; color: #444; text-align: left;
+  display: flex; flex-direction: column; gap: 6px; }
+.setup-input, #setup-provider { width: 100%; padding: 14px; font-size: 16px;
+  border: 1px solid #ccc; border-radius: 10px; box-sizing: border-box;
+  color: #111; background: #fff; }
+.setup-btn { padding: 14px; font-size: 17px; border: none; border-radius: 10px;
+  background: #111; color: #fff; cursor: pointer; }
+.setup-msg { min-height: 20px; color: #c00; font-size: 14px; }
+
+/* 노치/세이프에어리어 */
+.cam-header { padding-top: calc(16px + env(safe-area-inset-top, 0)); }
+
+/* 인쇄: 4x6 사진만 */
+@media print {
+  body * { visibility: hidden; }
+  #result-image, #result-image * { visibility: visible; }
+  #result-image { position: fixed; top: 0; left: 0; width: 100%; height: auto; }
+  @page { size: 4in 6in; margin: 0; }
+}

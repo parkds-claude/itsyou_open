@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <clipPath id="clip"><rect width="80" height="80" rx="12"/></clipPath>
+  <g clip-path="url(#clip)">
+    <rect width="80" height="80" fill="#f8f4ee"/>
+    <polygon points="0,0 40,15 80,0 80,80 0,80" fill="#e8e0d5" opacity="0.8"/>
+    <polygon points="15,15 65,15 70,50 10,50" fill="#fffaf5"/>
+    <polygon points="10,50 70,50 65,75 15,75" fill="#f0ebe3"/>
+    <polygon points="15,15 10,50 0,45 5,12" fill="#ddd5c8"/>
+    <polygon points="65,15 70,50 80,45 75,12" fill="#ddd5c8"/>
+    <polygon points="15,15 65,15 60,8 20,8" fill="#e8e0d5"/>
+    <ellipse cx="40" cy="32" rx="15" ry="16" fill="#fde8cc"/>
+    <polygon points="28,22 40,18 52,22 52,36 40,40 28,36" fill="#fde0b8" opacity="0.5"/>
+    <ellipse cx="34" cy="30" rx="3" ry="3" fill="#5a3a2a"/>
+    <ellipse cx="46" cy="30" rx="3" ry="3" fill="#5a3a2a"/>
+    <polygon points="36,38 44,38 40,42" fill="#e07070" opacity="0.7"/>
+    <ellipse cx="40" cy="60" rx="18" ry="12" fill="#fde8cc" opacity="0.6"/>
+  </g>
+</svg>

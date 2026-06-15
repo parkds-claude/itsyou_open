@@ -1,0 +1,77 @@
+[
+  {
+    "id": "3d-caricature",
+    "name": "3D 캐리커처",
+    "prompt": "Turn the person into a playful 3D caricature with a slightly larger head, smooth rounded shapes and soft studio lighting. Keep the face clearly recognizable."
+  },
+  {
+    "id": "3d-chibi",
+    "name": "3D 치비 카툰",
+    "prompt": "Turn the person into a cute 3D cartoon chibi character with large eyes, soft rounded features and bright cheerful colors. Keep the face clearly recognizable."
+  },
+  {
+    "id": "watercolor-anime",
+    "name": "수채 애니메이션",
+    "prompt": "Turn the person into a soft watercolor anime illustration with gentle pastel colors, clean linework and a dreamy hand-painted look. Keep the face clearly recognizable."
+  },
+  {
+    "id": "fashion-illustration",
+    "name": "패션 일러스트",
+    "prompt": "Turn the person into an elegant fashion illustration with loose expressive brush strokes, stylish clothing and a chic editorial mood. Keep the face clearly recognizable."
+  },
+  {
+    "id": "street-figure",
+    "name": "스트릿 패션 피규어",
+    "prompt": "Turn the person into a stylish collectible figure wearing trendy streetwear, with a glossy toy-like finish displayed like a designer figurine. Keep the face clearly recognizable."
+  },
+  {
+    "id": "storybook",
+    "name": "동화책 일러스트",
+    "prompt": "Turn the person into a warm children's storybook illustration with soft colors, cozy textures and a gentle fairytale atmosphere. Keep the face clearly recognizable."
+  },
+  {
+    "id": "editorial-flat",
+    "name": "에디토리얼 플랫",
+    "prompt": "Turn the person into a modern flat vector illustration with simple shapes, clean lines and a limited stylish color palette. Keep the face clearly recognizable."
+  },
+  {
+    "id": "ink-wash",
+    "name": "수묵 잉크",
+    "prompt": "Turn the person into an East Asian ink wash painting with flowing brush strokes, soft gradients of black ink and elegant empty space. Keep the face clearly recognizable."
+  },
+  {
+    "id": "vintage-magazine",
+    "name": "빈티지 매거진",
+    "prompt": "Turn the person into a retro vintage magazine cover look with grainy film texture, warm faded colors and a bold classic layout. Keep the face clearly recognizable."
+  },
+  {
+    "id": "double-exposure",
+    "name": "시네마틱 이중노출",
+    "prompt": "Turn the person into a cinematic double-exposure portrait blending their silhouette with atmospheric scenery and moody lighting. Keep the face clearly recognizable."
+  },
+  {
+    "id": "paper-collage",
+    "name": "색종이 콜라주",
+    "prompt": "Turn the person into a colorful cut-paper collage made of layered torn paper shapes with playful textures. Keep the face clearly recognizable."
+  },
+  {
+    "id": "paper-craft",
+    "name": "3D 종이공예",
+    "prompt": "Turn the person into a 3D papercraft model made of folded and layered paper with soft shadows and a handcrafted charm. Keep the face clearly recognizable."
+  },
+  {
+    "id": "dark-fantasy",
+    "name": "다크 판타지",
+    "prompt": "Turn the person into a dramatic dark fantasy character with glowing magical elements, rich shadows and an epic mysterious mood. Keep the face clearly recognizable."
+  },
+  {
+    "id": "cctv",
+    "name": "CCTV 추적",
+    "prompt": "Render the person as if seen through a grainy CCTV security camera, with a timestamp overlay, low resolution and a surveillance look. Keep the face clearly recognizable."
+  },
+  {
+    "id": "doodle-sticker",
+    "name": "코지 두들 스티커",
+    "prompt": "Turn the person into a cute hand-drawn doodle sticker with a bold outline, simple cozy shapes and cheerful colors. Keep the face clearly recognizable."
+  }
+]

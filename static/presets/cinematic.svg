@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <defs>
+    <radialGradient id="bgcin" cx="50%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#2a1a3e"/>
+      <stop offset="100%" stop-color="#0a0510"/>
+    </radialGradient>
+    <clipPath id="clip"><rect width="80" height="80" rx="12"/></clipPath>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="80" height="80" fill="url(#bgcin)"/>
+    <ellipse cx="42" cy="35" rx="20" ry="30" fill="#1a0a28" opacity="0.9"/>
+    <ellipse cx="38" cy="33" rx="18" ry="26" fill="#150820" opacity="0.95"/>
+    <circle cx="55" cy="20" r="18" fill="#1a3a5a" opacity="0.6"/>
+    <circle cx="20" cy="60" r="20" fill="#0a2a1a" opacity="0.5"/>
+    <circle cx="15" cy="10" r="0.8" fill="white" opacity="0.9"/><circle cx="25" cy="5" r="0.8" fill="white" opacity="0.7"/><circle cx="60" cy="8" r="0.8" fill="white" opacity="0.8"/><circle cx="70" cy="15" r="0.8" fill="white" opacity="0.6"/><circle cx="5" cy="40" r="0.8" fill="white" opacity="0.5"/><circle cx="75" cy="50" r="0.8" fill="white" opacity="0.7"/><circle cx="10" cy="65" r="0.8" fill="white" opacity="0.6"/>
+    <rect x="0" y="0" width="80" height="4" fill="#0a0510"/>
+    <rect x="0" y="76" width="80" height="4" fill="#0a0510"/>
+    <text x="5" y="74" font-family="serif" font-size="6" fill="#c8a060" opacity="0.8">CINEMATIC</text>
+  </g>
+</svg>

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<title>인쇄</title>
+<style>
+  html,body{margin:0;padding:0}
+  img{width:100%;height:auto;display:block}
+  @page{size:4in 6in;margin:0}
+</style></head>
+<body>
+  <img src="/result/{{ result_id }}" onload="window.print()" alt="">
+</body></html>

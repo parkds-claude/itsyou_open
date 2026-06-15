@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>itsyou</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+  <script src="/static/qrcode.min.js"></script>
+</head>
+<body>
+
+  <!-- 화면 0: 키 설정 -->
+  <div id="screen-setup" class="screen">
+    <div class="setup-wrap">
+      <h1 class="setup-title">itsyou</h1>
+      <p class="setup-sub">AI 포토부스를 시작하려면 API 키를 입력하세요.</p>
+      <label class="setup-label">AI 제공자
+        <select id="setup-provider">
+          <option value="gemini">Google Gemini</option>
+          <option value="openai">OpenAI</option>
+        </select>
+      </label>
+      <input id="setup-key" class="setup-input" type="password" placeholder="API 키 붙여넣기" autocomplete="off">
+      <button id="setup-save" class="setup-btn">시작하기</button>
+      <p id="setup-msg" class="setup-msg"></p>
+    </div>
+  </div>
+
+  <!-- 화면 1: 카메라 -->
+  <div id="screen-camera" class="screen">
+    <div class="cam-header">
+      <button id="btn-flip" class="icon-btn" aria-label="카메라 전환">🔄</button>
+      <p class="cam-title">It's you <span></span></p>
+      <button id="btn-fullscreen" class="icon-btn" aria-label="전체화면">⛶</button>
+    </div>
+    <div class="cam-viewport">
+      <video id="video" autoplay playsinline muted></video>
+      <!-- 카운트다운 오버레이 -->
+      <div id="countdown-overlay" class="countdown-overlay hidden">
+        <span id="countdown-num"></span>
+      </div>
+    </div>
+    <div class="cam-footer">
+      <div id="preset-list" class="preset-list" role="list"></div>
+      <button id="btn-shutter" class="shutter-btn" aria-label="촬영">●</button>
+      <p id="shutter-hint" class="shutter-hint">버튼을 누르면 5초 후에 촬영됩니다.</p>
+    </div>
+  </div>
+
+  <!-- 화면 2: 생성 중 -->
+  <div id="screen-loading" class="screen">
+    <div class="loading-wrap">
+      <img id="loading-preview" class="loading-preview" alt="">
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+        <p id="loading-preset-name" class="loading-title">변환 중...</p>
+        <p class="loading-sub">약 15초 소요됩니다</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 화면 3: 결과 -->
+  <div id="screen-result" class="screen">
+    <div class="result-img-wrap">
+      <img id="result-image" class="result-img" alt="생성된 이미지">
+    </div>
+    <div class="result-footer">
+      <div class="btn-row">
+        <button id="btn-qr"    class="share-btn">QR 코드</button>
+        <button id="btn-download" class="share-btn">저장</button>
+      </div>
+      <div class="btn-row">
+        <button id="btn-share" class="share-btn">공유하기</button>
+        <button id="btn-print" class="share-btn">인쇄 🖨</button>
+      </div>
+      <button id="btn-retry" class="retry-btn">다시 찍기</button>
+      <p class="auto-return-hint"><span id="auto-return-count">30</span>초 후 자동으로 처음으로 돌아갑니다</p>
+    </div>
+  </div>
+
+  <!-- QR 모달 -->
+  <div id="modal-qr" class="modal hidden">
+    <div class="modal-box">
+      <h3>QR 코드로 저장</h3>
+      <div id="qr-container" class="qr-container"></div>
+      <p class="modal-sub">카메라로 스캔하면 사진을 받을 수 있어요</p>
+      <button id="btn-qr-close" class="modal-close">닫기</button>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# 환경/비밀
+.env
+config.json
+.itsyou/
+*.key
+
+# 결과물/임시
+results/
+/tmp/
+*.jpg
+!static/presets/*.jpg
+!data/*.json
+# 행사 로고(업로드물) — 실수 커밋 방지
+data/event_logo.*
+
+# 파이썬
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# 내부 설계 문서(공개 제외)
+docs/
