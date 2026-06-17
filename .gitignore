@@ -19,6 +19,7 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+.venv_test/
 
 # 내부 설계 문서(공개 제외)
 docs/
