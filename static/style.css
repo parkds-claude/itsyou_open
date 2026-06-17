@@ -30,7 +30,9 @@ button, .preset-chip, .share-btn, .retry-btn, .icon-btn, .shutter-btn, .modal-cl
   background: rgba(0,0,0,.5); border: none; color: #fff;
   font-size: 22px; width: 48px; height: 48px;
   border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
 }
+.icon-btn svg { width: 24px; height: 24px; display: block; }
 .cam-viewport { position: absolute; inset: 0; overflow: hidden; }
 #video {
   width: 100%; height: 100%; object-fit: cover;
@@ -146,10 +148,10 @@ button, .preset-chip, .share-btn, .retry-btn, .icon-btn, .shutter-btn, .modal-cl
 
 /* 셔터 */
 .shutter-btn {
-  width: 72px; height: 72px; border-radius: 50%;
-  background: #e8003a; border: 5px solid rgba(255,255,255,.4);
-  font-size: 28px; cursor: pointer;
-  box-shadow: 0 0 0 5px rgba(232,0,58,.3);
+  width: 54px; height: 54px; border-radius: 50%;
+  background: #fff; border: 3px solid rgba(0,0,0,.08);
+  font-size: 21px; color: transparent; cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(255,255,255,.35), 0 2px 6px rgba(0,0,0,.25);
   transition: transform .1s;
 }
 .shutter-btn:active { transform: scale(.92); }
@@ -286,10 +288,11 @@ button, .preset-chip, .share-btn, .retry-btn, .icon-btn, .shutter-btn, .modal-cl
   .preset-label { font-size: 13px; padding: 6px 4px 8px; }
 
   /* 셔터 확대 */
-  .shutter-btn { width: 88px; height: 88px; font-size: 36px; }
+  .shutter-btn { width: 66px; height: 66px; font-size: 27px; }
 
   /* 상단 전환 버튼 */
   .icon-btn { width: 56px; height: 56px; font-size: 26px; }
+  .icon-btn svg { width: 28px; height: 28px; }
 
   /* 결과 화면 버튼 */
   .share-btn  { font-size: 17px; padding: 18px 8px; border-radius: 16px; }
