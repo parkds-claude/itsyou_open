@@ -149,18 +149,20 @@ python app.py
 
 **어드민 페이지에서 추가/수정**
 
-서버를 시작하면 콘솔(Termux 화면)에 어드민 키가 표시됩니다:
+서버를 시작하면 콘솔(Termux 화면)에 어드민 키의 **앞 8자리**가 표시됩니다(전체 키 노출 방지):
 
 ```
-[itsyou] Admin Key: a1b2c3d4e5f6...
-[itsyou] Admin page: http://localhost:5080/admin
+[itsyou_open] 어드민 키: a1b2c3d4…  (전체 키는 ~/.itsyou/config.json 의 admin_key)
+[itsyou_open] 어드민 페이지: http://localhost:5080/admin
 ```
 
-갤탭 Chrome에서 `http://localhost:5080/admin` 을 열고, 이 키를 입력하면 프리셋을 추가하거나 수정할 수 있습니다.
+**전체 어드민 키**는 `~/.itsyou/config.json` 파일의 `admin_key` 값을 확인하세요. 갤탭 Chrome에서 `http://localhost:5080/admin` 을 열고 이 키를 입력하면 프리셋을 추가/수정할 수 있습니다.
+
+> **gunicorn 등으로 실행하는 경우**: `python app.py` 가 아니면 위 콘솔 안내가 출력되지 않습니다. 이때는 `ADMIN_KEY=원하는키 gunicorn app:app` 처럼 환경변수로 키를 직접 지정하거나, `~/.itsyou/config.json` 의 `admin_key` 를 확인하세요.
 
 **직접 파일 편집**
 
-`data/itsyou_presets.json` 파일을 직접 수정할 수도 있습니다. 서버를 재시작하면 반영됩니다.
+`data/itsyou_presets.json` 파일을 직접 수정할 수도 있습니다. (저장 즉시 반영 — 재시작 불필요)
 
 **프리셋 기여 시 주의사항**
 

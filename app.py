@@ -116,7 +116,7 @@ def snap():
     if not provider:
         return jsonify({"error": "not configured"}), 400
 
-    preset_id = request.form.get("preset_id") or None
+    preset_id = (request.form.get("preset_id") or "").strip() or None
     preset = ip.get_by_id(preset_id)
     if preset is None:
         import random
@@ -351,7 +351,11 @@ def admin_presets_reorder():
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5080))
-    print(f"[itsyou_open] 어드민 키: {cs.get_or_create_admin_key()}  (어드민 페이지에서 입력)")
+    _admin_key = cs.get_or_create_admin_key()
+    # 키 전체를 터미널에 평문 노출하지 않는다(스크롤 히스토리·어깨너머 탈취 방지).
+    # 어드민 페이지 입력용 전체 키는 ~/.itsyou/config.json 의 admin_key 필드에서 확인한다.
+    print(f"[itsyou_open] 어드민 키: {_admin_key[:8]}…  (전체 키는 ~/.itsyou/config.json 의 admin_key)")
+    print(f"[itsyou_open] 어드민 페이지: http://localhost:{port}/admin")
     print(f"[itsyou_open] http://localhost:{port} 으로 접속하세요. 같은 와이파이의 폰은 QR로 사진만 받을 수 있습니다.")
     app.run(host="0.0.0.0", port=port,
             debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true")

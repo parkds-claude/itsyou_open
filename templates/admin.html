@@ -459,7 +459,7 @@
         .replace(/&/g,"&amp;").replace(/</g,"&lt;")
         .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
     }
-    function escAttr(s) { return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'"); }
+    function escAttr(s) { return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/\\/g,"\\\\").replace(/'/g,"\\'"); }
 
     let _toastTimer;
     function toast(msg, isErr = false) {

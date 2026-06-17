@@ -48,16 +48,22 @@ def generate_image(image_bytes: bytes, prompt: str, key: str) -> bytes:
         {"model": MODEL, "prompt": prompt, "size": "1024x1536", "n": "1"},
         {"image": ("selfie.png", png, "image/png")},
     )
-    req = urllib.request.Request(
-        _API, data=body, method="POST",
-        headers={"Authorization": f"Bearer {key}",
-                 "Content-Type": f"multipart/form-data; boundary={boundary}"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        data = json.loads(r.read())
-    b64 = data.get("data", [{}])[0].get("b64_json")
-    if not b64:
-        raise RuntimeError("no image in response")
-    return base64.b64decode(b64)
+
+    def build():
+        return urllib.request.Request(
+            _API, data=body, method="POST",
+            headers={"Authorization": f"Bearer {key}",
+                     "Content-Type": f"multipart/form-data; boundary={boundary}"})
+
+    def extract(data):
+        # data 가 빈 배열일 수 있으므로 IndexError 없이 안전 파싱
+        items = data.get("data") or []
+        if not items:
+            return None
+        b64 = items[0].get("b64_json")
+        return base64.b64decode(b64) if b64 else None
+
+    return base.call_with_retry(build, extract)
 
 
 base.register("openai", generate_image)
