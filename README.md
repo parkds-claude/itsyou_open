@@ -12,7 +12,11 @@
 - **프리셋 15종 큐레이션** — 저작권 클리어된 15가지 스타일(3D 캐리커처, 수채 애니메이션, CCTV 추적 등)을 즉시 사용 가능하고, 어드민 페이지에서 자유롭게 추가/수정 가능합니다.
 - **API 키 로컬 저장** — 첫 화면에서 입력한 API 키는 기기 내부(`~/.itsyou/config.json`)에만 저장되며, 브라우저나 외부 서버로 전송되지 않습니다.
 
-<!-- 스크린샷 추가 예정 -->
+| 1. 촬영 | 2. AI 변환 중 | 3. 결과 | 4. 인쇄 |
+|:---:|:---:|:---:|:---:|
+| <img src="screenshots/01-capture.png" width="200"> | <img src="screenshots/02-converting.png" width="200"> | <img src="screenshots/03-result.png" width="200"> | <img src="screenshots/04-print.png" width="200"> |
+
+> 셀카를 찍으면 AI가 선택한 스타일로 변환하고, QR 공유·인쇄까지 한 번에.
 
 ---
 

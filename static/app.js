@@ -254,8 +254,8 @@ async function uploadSnap(blob) {
   } catch (err) {
     clearTimeout(tid);
     const msg = err.name === "AbortError"
-      ? "변환 시간이 초과됐습니다. 다시 시도해주세요."
-      : "변환 실패: " + err.message;
+      ? "변환 시간이 초과됐어요. 다시 시도해주세요."
+      : "AI 변환에 실패했어요. 잠시 후 다시 시도해주세요.";
     alert(msg);
     showScreen("camera");
   }

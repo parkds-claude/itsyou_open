@@ -1,6 +1,8 @@
 import base64
 import io
 import json
+import time
+import urllib.error
 import urllib.request
 
 from PIL import Image
@@ -37,6 +39,12 @@ def _downscale_b64(raw):
     return base64.b64encode(buf.getvalue()).decode()
 
 
+# Gemini 가 간헐적으로 5xx/429(일시 과부하·레이트리밋) 또는 빈 응답을 줄 때가 있어
+# 짧은 backoff 로 최대 3회 재시도한다(영구 4xx 는 즉시 중단).
+_RETRY_HTTP = {429, 500, 502, 503, 504}
+_MAX_ATTEMPTS = 3
+
+
 def generate_image(image_bytes: bytes, prompt: str, key: str) -> bytes:
     image_b64 = _downscale_b64(image_bytes)
     url = (f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent")
@@ -44,16 +52,35 @@ def generate_image(image_bytes: bytes, prompt: str, key: str) -> bytes:
         {"inlineData": {"mimeType": "image/jpeg", "data": image_b64}},
         {"text": prompt},
     ]}]}
-    req = urllib.request.Request(
-        url, data=json.dumps(body).encode(),
-        headers={"Content-Type": "application/json", "x-goog-api-key": key})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        data = json.loads(r.read())
-    parts = data.get("candidates", [{}])[0].get("content", {}).get("parts", [])
-    for p in parts:
-        if "inlineData" in p:
-            return base64.b64decode(p["inlineData"]["data"])
-    raise RuntimeError("no image in response")
+    payload = json.dumps(body).encode()
+    last_err = None
+    for attempt in range(_MAX_ATTEMPTS):
+        req = urllib.request.Request(
+            url, data=payload,
+            headers={"Content-Type": "application/json", "x-goog-api-key": key})
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                data = json.loads(r.read())
+            parts = data.get("candidates", [{}])[0].get("content", {}).get("parts", [])
+            for p in parts:
+                if "inlineData" in p:
+                    return base64.b64decode(p["inlineData"]["data"])
+            # 응답은 왔으나 이미지 없음(드물게 일시적) — 재시도 대상
+            last_err = RuntimeError("Gemini 응답에 이미지가 없습니다")
+        except urllib.error.HTTPError as e:
+            detail = ""
+            try:
+                detail = e.read().decode("utf-8", "ignore")[:200]
+            except Exception:
+                pass
+            last_err = RuntimeError(f"Gemini HTTP {e.code}: {detail}")
+            if e.code not in _RETRY_HTTP:   # 영구 오류(키 오류 등)는 재시도 무의미
+                raise last_err
+        except urllib.error.URLError as e:
+            last_err = RuntimeError(f"Gemini 연결 실패: {e.reason}")
+        if attempt < _MAX_ATTEMPTS - 1:
+            time.sleep(1.5 * (attempt + 1))   # 1.5s, 3s backoff
+    raise last_err if last_err else RuntimeError("Gemini 이미지 생성 실패")
 
 
 base.register("gemini", generate_image)
