@@ -99,6 +99,32 @@ def healthz():
 def presets():
     return jsonify([{"id": p["id"], "name": p["name"]} for p in ip.get_presets()])
 
+
+# ── 키오스크 프롬프트 수정 ────────────────────────────────────────────────────
+# /kiosk 접두사는 security 게이트에서 민감 경로(신뢰 출처 전용)로 취급된다.
+# 어드민 키 대신 출처 IP(localhost 또는 ITSYOU_KIOSK_IPS)로만 보호한다 —
+# 현장 운영자가 선택한 스타일의 프롬프트를 빠르게 손볼 수 있게 한다.
+@app.get("/kiosk/preset/<pid>")
+def kiosk_preset_get(pid):
+    p = ip.get_by_id(pid)
+    if p is None:
+        return jsonify({"error": "not found"}), 404
+    return jsonify({"id": p["id"], "name": p["name"], "prompt": p["prompt"]})
+
+
+@app.put("/kiosk/preset/<pid>")
+def kiosk_preset_update(pid):
+    new_prompt = ((request.get_json(silent=True) or {}).get("prompt") or "").strip()
+    if not new_prompt:
+        return jsonify({"error": "prompt required"}), 400
+    presets = ip.get_presets()
+    for p in presets:
+        if p["id"] == pid:
+            p["prompt"] = new_prompt
+            ip.save_presets(presets)
+            return jsonify({"ok": True})
+    return jsonify({"error": "not found"}), 404
+
 @app.post("/snap")
 def snap():
     if not _rate.allow(request.remote_addr):
@@ -352,10 +378,21 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5080))
     _admin_key = cs.get_or_create_admin_key()
+
+    # HTTPS(opt-in): ITSYOU_TLS_CERT / ITSYOU_TLS_KEY 가 가리키는 인증서가 있으면 TLS 로 구동.
+    # 폰을 LAN 너머 키오스크로 쓰는 경우 카메라(getUserMedia)는 보안 컨텍스트(HTTPS)를 요구한다.
+    # 미설정 시 기존대로 HTTP(localhost/Termux 단독 운용)로 동작한다.
+    _cert = os.environ.get("ITSYOU_TLS_CERT", "").strip()
+    _key = os.environ.get("ITSYOU_TLS_KEY", "").strip()
+    _ssl = (_cert, _key) if _cert and _key and os.path.exists(_cert) and os.path.exists(_key) else None
+    _scheme = "https" if _ssl else "http"
+
     # 키 전체를 터미널에 평문 노출하지 않는다(스크롤 히스토리·어깨너머 탈취 방지).
     # 어드민 페이지 입력용 전체 키는 ~/.itsyou/config.json 의 admin_key 필드에서 확인한다.
     print(f"[itsyou_open] 어드민 키: {_admin_key[:8]}…  (전체 키는 ~/.itsyou/config.json 의 admin_key)")
-    print(f"[itsyou_open] 어드민 페이지: http://localhost:{port}/admin")
-    print(f"[itsyou_open] http://localhost:{port} 으로 접속하세요. 같은 와이파이의 폰은 QR로 사진만 받을 수 있습니다.")
-    app.run(host="0.0.0.0", port=port,
+    print(f"[itsyou_open] 어드민 페이지: {_scheme}://localhost:{port}/admin")
+    print(f"[itsyou_open] {_scheme}://localhost:{port} 으로 접속하세요. 같은 와이파이의 폰은 QR로 사진만 받을 수 있습니다.")
+    if _ssl:
+        print(f"[itsyou_open] TLS 활성화 — 키오스크 폰은 {_scheme}://<이 PC의 LAN IP>:{port} 로 접속하세요.")
+    app.run(host="0.0.0.0", port=port, ssl_context=_ssl,
             debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true")

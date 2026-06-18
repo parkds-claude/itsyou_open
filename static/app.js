@@ -337,6 +337,56 @@ document.getElementById("btn-share").addEventListener("click", async () => {
   }
 });
 
+/* ── 프롬프트 수정 (키오스크 운영자용, 선택된 스타일 대상) ── */
+const promptModal = document.getElementById("modal-prompt");
+const promptTextarea = document.getElementById("prompt-textarea");
+const promptMsg = document.getElementById("prompt-modal-msg");
+
+document.getElementById("btn-edit-prompt").addEventListener("click", async () => {
+  if (!selectedPresetId) {
+    alert("‘랜덤’이 아닌 스타일을 먼저 선택하면 그 스타일의 프롬프트를 수정할 수 있어요.");
+    return;
+  }
+  const chip = document.querySelector(".preset-chip.selected .preset-label");
+  document.getElementById("prompt-modal-title").textContent =
+    `프롬프트 수정 — ${chip ? chip.textContent : ""}`;
+  promptMsg.textContent = "불러오는 중...";
+  promptTextarea.value = "";
+  promptModal.classList.remove("hidden");
+  try {
+    const r = await fetch(`/kiosk/preset/${selectedPresetId}`);
+    if (!r.ok) throw new Error(r.status);
+    const data = await r.json();
+    promptTextarea.value = data.prompt || "";
+    promptMsg.textContent = "";
+  } catch {
+    promptMsg.textContent = "프롬프트를 불러오지 못했습니다.";
+  }
+});
+
+document.getElementById("btn-prompt-save").addEventListener("click", async () => {
+  if (!selectedPresetId) return;
+  const prompt = promptTextarea.value.trim();
+  if (!prompt) { promptMsg.textContent = "프롬프트를 입력하세요."; return; }
+  promptMsg.textContent = "저장 중...";
+  try {
+    const r = await fetch(`/kiosk/preset/${selectedPresetId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt }),
+    });
+    if (!r.ok) throw new Error(r.status);
+    promptMsg.textContent = "저장되었습니다. 다음 촬영부터 반영됩니다.";
+    setTimeout(() => promptModal.classList.add("hidden"), 800);
+  } catch {
+    promptMsg.textContent = "저장에 실패했습니다.";
+  }
+});
+
+document.getElementById("btn-prompt-close").addEventListener("click", () => {
+  promptModal.classList.add("hidden");
+});
+
 /* ── 다시 찍기 ── */
 document.getElementById("btn-retry").addEventListener("click", _resetToCamera);
 

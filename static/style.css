@@ -68,6 +68,31 @@ button, .preset-chip, .share-btn, .retry-btn, .icon-btn, .shutter-btn, .modal-cl
 }
 .shutter-hint.hidden { display: none; }
 
+/* ── 프롬프트 수정 버튼 (운영자용) ── */
+.edit-prompt-btn {
+  margin-top: 8px;
+  background: rgba(255,255,255,.10);
+  color: rgba(255,255,255,.85);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 13px; font-weight: 500;
+  letter-spacing: .3px;
+}
+.edit-prompt-btn:active { background: rgba(255,255,255,.22); }
+
+/* ── 프롬프트 수정 모달 ── */
+.prompt-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px; line-height: 1.5;
+  padding: 12px 14px;
+  border: 1px solid #ccc; border-radius: 12px;
+  resize: vertical; min-height: 140px;
+  font-family: inherit;
+}
+.prompt-modal-msg { font-size: 13px; color: #666; min-height: 18px; text-align: center; }
+
 /* ── 카운트다운 오버레이 ── */
 .countdown-overlay {
   position: absolute; inset: 0;
