@@ -15,8 +15,11 @@ from collections import deque
 
 _LOCALHOST = {"127.0.0.1", "::1", "localhost"}
 
-# 민감 경로 접두사 (기본 localhost 전용, 신뢰 IP 허용 가능)
-_LOCAL_ONLY_PREFIXES = ("/snap", "/config", "/kiosk", "/admin")
+# localhost 전용(가장 민감): API 키 설정·어드민. 신뢰 IP 라도 절대 허용하지 않는다.
+#  → 키오스크 폰(촬영 기기)에 API 키 교체/어드민 권한을 주지 않기 위함.
+_LOCALHOST_ONLY_PREFIXES = ("/config", "/admin")
+# 신뢰 출처 허용: 촬영·키오스크 프롬프트 편집. localhost 또는 ITSYOU_KIOSK_IPS.
+_TRUSTED_PREFIXES = ("/snap", "/kiosk")
 
 
 def _load_trusted_nets():
@@ -34,6 +37,7 @@ def _load_trusted_nets():
     return nets
 
 
+# 모듈 임포트 시 1회만 로드된다. ITSYOU_KIOSK_IPS 를 바꾸면 앱을 재기동해야 반영된다.
 _TRUSTED_NETS = _load_trusted_nets()
 
 
@@ -50,11 +54,16 @@ def is_trusted(remote_addr: str) -> bool:
 
 def is_local_only(path: str) -> bool:
     # 대소문자 무시(방어심층): /Snap 같은 변형도 민감 경로로 취급
-    return path.lower().startswith(_LOCAL_ONLY_PREFIXES)
+    lp = path.lower()
+    return lp.startswith(_LOCALHOST_ONLY_PREFIXES) or lp.startswith(_TRUSTED_PREFIXES)
 
 
 def is_allowed(path: str, remote_addr: str) -> bool:
-    if is_local_only(path):
+    # 대소문자 무시로 우회 차단. localhost 전용이 신뢰IP 허용보다 우선.
+    lp = path.lower()
+    if lp.startswith(_LOCALHOST_ONLY_PREFIXES):
+        return remote_addr in _LOCALHOST
+    if lp.startswith(_TRUSTED_PREFIXES):
         return is_trusted(remote_addr)
     return True
 

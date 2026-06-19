@@ -120,12 +120,21 @@ def presets():
     return jsonify([{"id": p["id"], "name": p["name"]} for p in ip.get_presets()])
 
 
-# ── 키오스크 프롬프트 수정 ────────────────────────────────────────────────────
-# /kiosk 접두사는 security 게이트에서 민감 경로(신뢰 출처 전용)로 취급된다.
-# 어드민 키 대신 출처 IP(localhost 또는 ITSYOU_KIOSK_IPS)로만 보호한다 —
-# 현장 운영자가 선택한 스타일의 프롬프트를 빠르게 손볼 수 있게 한다.
+# ── 키오스크 프롬프트 수정/추가 ──────────────────────────────────────────────
+# /kiosk 접두사는 security 게이트에서 신뢰 출처(localhost 또는 ITSYOU_KIOSK_IPS) 전용이다.
+# 어드민 키 대신 출처 IP로만 보호한다 — 현장 운영자가 스타일 프롬프트를 빠르게 손볼 수 있게.
+# 쓰기(POST/PUT)는 별도 rate limit + 길이 상한으로 남용/디스크 팽창을 방지한다.
+_KIOSK_NAME_MAX = 80
+_KIOSK_PROMPT_MAX = 4000
+_PID_RE = re.compile(r"[A-Za-z0-9_-]{1,40}")
+# 쓰기 전용 한도(촬영용 _rate 와 분리해 상호 간섭 방지)
+_kiosk_rate = sec.RateLimiter(per_ip_per_min=20, global_per_min=60)
+
+
 @app.get("/kiosk/preset/<pid>")
 def kiosk_preset_get(pid):
+    if not _PID_RE.fullmatch(pid):
+        return jsonify({"error": "not found"}), 404
     p = ip.get_by_id(pid)
     if p is None:
         return jsonify({"error": "not found"}), 404
@@ -134,20 +143,30 @@ def kiosk_preset_get(pid):
 
 @app.post("/kiosk/preset")
 def kiosk_preset_add():
+    if not _kiosk_rate.allow(request.remote_addr):
+        return jsonify({"error": "rate limited"}), 429
     d = request.get_json(silent=True) or {}
     name = (d.get("name") or "").strip()
     prompt = (d.get("prompt") or "").strip()
     if not name or not prompt:
         return jsonify({"error": "name and prompt required"}), 400
+    if len(name) > _KIOSK_NAME_MAX or len(prompt) > _KIOSK_PROMPT_MAX:
+        return jsonify({"error": "name or prompt too long"}), 400
     item = ip.add_preset(name, prompt)
     return jsonify(item), 201
 
 
 @app.put("/kiosk/preset/<pid>")
 def kiosk_preset_update(pid):
+    if not _kiosk_rate.allow(request.remote_addr):
+        return jsonify({"error": "rate limited"}), 429
+    if not _PID_RE.fullmatch(pid):
+        return jsonify({"error": "not found"}), 404
     new_prompt = ((request.get_json(silent=True) or {}).get("prompt") or "").strip()
     if not new_prompt:
         return jsonify({"error": "prompt required"}), 400
+    if len(new_prompt) > _KIOSK_PROMPT_MAX:
+        return jsonify({"error": "prompt too long"}), 400
     presets = ip.get_presets()
     for p in presets:
         if p["id"] == pid:

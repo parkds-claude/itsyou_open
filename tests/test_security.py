@@ -1,8 +1,19 @@
+import ipaddress
 import time
 import security as sec
 
 LOCAL_ONLY = "/snap"
 PUBLIC = "/result/abc"
+
+
+def test_kiosk_ip_allows_kiosk_not_config(monkeypatch):
+    # ITSYOU_KIOSK_IPS 로 신뢰된 출처라도 /config·/admin 은 절대 허용하지 않는다.
+    monkeypatch.setattr(sec, "_TRUSTED_NETS", [ipaddress.ip_network("192.168.0.0/24")])
+    assert sec.is_allowed("/snap", "192.168.0.7") is True
+    assert sec.is_allowed("/kiosk/preset/x", "192.168.0.7") is True
+    assert sec.is_allowed("/config/key", "192.168.0.7") is False
+    assert sec.is_allowed("/admin/api/presets", "192.168.0.7") is False
+    assert sec.is_allowed("/kiosk/preset/x", "10.0.0.9") is False  # 범위 밖은 차단
 
 def test_localhost_required_for_sensitive():
     assert sec.is_allowed(LOCAL_ONLY, "127.0.0.1") is True
