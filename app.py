@@ -63,6 +63,16 @@ def index():
     return render_template("index.html")
 
 
+@app.get("/sw.js")
+def service_worker():
+    # 서비스워커는 자신의 경로 기준으로 scope 가 정해진다.
+    # 루트("/")에서 서빙 + Service-Worker-Allowed 헤더로 앱 전체를 제어 범위로 둔다.
+    resp = send_file(_ROOT / "static" / "sw.js", mimetype="application/javascript")
+    resp.headers["Service-Worker-Allowed"] = "/"
+    resp.headers["Cache-Control"] = "no-cache"
+    return resp
+
+
 @app.get("/config/status")
 def config_status():
     return jsonify(cs.status())

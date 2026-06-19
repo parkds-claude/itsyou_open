@@ -2,8 +2,15 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>itsyou</title>
+  <!-- PWA: 홈 화면에 설치하면 전체화면 앱처럼 실행된다 -->
+  <link rel="manifest" href="/static/manifest.webmanifest">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="/static/icon-192.png">
   <link rel="stylesheet" href="/static/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
   <script src="/static/qrcode.min.js"></script>
@@ -40,7 +47,8 @@
           <path d="m6 2 3 3-3 3"/>
         </svg>
       </button>
-      <p class="cam-title">It's you <span></span></p>
+      <p id="cam-title" class="cam-title" role="button" tabindex="0"
+         aria-label="프롬프트 수정">It's you <span></span></p>
       <button id="btn-fullscreen" class="icon-btn" aria-label="전체화면">⛶</button>
     </div>
     <div class="cam-viewport">
@@ -54,7 +62,6 @@
       <div id="preset-list" class="preset-list" role="list"></div>
       <button id="btn-shutter" class="shutter-btn" aria-label="촬영">●</button>
       <p id="shutter-hint" class="shutter-hint">버튼을 누르면 5초 후에 촬영됩니다.</p>
-      <button id="btn-edit-prompt" class="edit-prompt-btn" aria-label="프롬프트 수정">✎ 프롬프트 수정</button>
     </div>
   </div>
 
@@ -115,5 +122,11 @@
   </div>
 
   <script src="/static/app.js"></script>
+  <script>
+    // PWA 서비스워커 등록(설치 가능 조건 충족). 실패해도 앱 동작엔 영향 없음.
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  </script>
 </body>
 </html>

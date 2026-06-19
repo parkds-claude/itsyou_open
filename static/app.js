@@ -342,7 +342,7 @@ const promptModal = document.getElementById("modal-prompt");
 const promptTextarea = document.getElementById("prompt-textarea");
 const promptMsg = document.getElementById("prompt-modal-msg");
 
-document.getElementById("btn-edit-prompt").addEventListener("click", async () => {
+async function openPromptEditor() {
   if (!selectedPresetId) {
     alert("‘랜덤’이 아닌 스타일을 먼저 선택하면 그 스타일의 프롬프트를 수정할 수 있어요.");
     return;
@@ -362,6 +362,13 @@ document.getElementById("btn-edit-prompt").addEventListener("click", async () =>
   } catch {
     promptMsg.textContent = "프롬프트를 불러오지 못했습니다.";
   }
+}
+
+// 상단 중앙 'It's you' 텍스트를 누르면 프롬프트 수정 모달이 열린다.
+const camTitle = document.getElementById("cam-title");
+camTitle.addEventListener("click", openPromptEditor);
+camTitle.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openPromptEditor(); }
 });
 
 document.getElementById("btn-prompt-save").addEventListener("click", async () => {

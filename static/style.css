@@ -68,18 +68,9 @@ button, .preset-chip, .share-btn, .retry-btn, .icon-btn, .shutter-btn, .modal-cl
 }
 .shutter-hint.hidden { display: none; }
 
-/* ── 프롬프트 수정 버튼 (운영자용) ── */
-.edit-prompt-btn {
-  margin-top: 8px;
-  background: rgba(255,255,255,.10);
-  color: rgba(255,255,255,.85);
-  border: 1px solid rgba(255,255,255,.25);
-  border-radius: 12px;
-  padding: 8px 16px;
-  font-size: 13px; font-weight: 500;
-  letter-spacing: .3px;
-}
-.edit-prompt-btn:active { background: rgba(255,255,255,.22); }
+/* ── 프롬프트 수정 트리거: 상단 'It's you' 텍스트 (운영자용) ── */
+.cam-title { cursor: pointer; user-select: none; -webkit-user-select: none; }
+.cam-title:active { opacity: .6; }
 
 /* ── 프롬프트 수정 모달 ── */
 .prompt-textarea {
