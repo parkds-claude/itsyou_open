@@ -132,6 +132,17 @@ def kiosk_preset_get(pid):
     return jsonify({"id": p["id"], "name": p["name"], "prompt": p["prompt"]})
 
 
+@app.post("/kiosk/preset")
+def kiosk_preset_add():
+    d = request.get_json(silent=True) or {}
+    name = (d.get("name") or "").strip()
+    prompt = (d.get("prompt") or "").strip()
+    if not name or not prompt:
+        return jsonify({"error": "name and prompt required"}), 400
+    item = ip.add_preset(name, prompt)
+    return jsonify(item), 201
+
+
 @app.put("/kiosk/preset/<pid>")
 def kiosk_preset_update(pid):
     new_prompt = ((request.get_json(silent=True) or {}).get("prompt") or "").strip()

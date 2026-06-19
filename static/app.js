@@ -99,31 +99,32 @@ async function loadPresets() {
     // 프리셋 로드 실패 시 랜덤만 표시
   }
   const list = document.getElementById("preset-list");
+  list.innerHTML = "";  // 재호출 시(스타일 추가 후) 중복 방지 위해 비우고 재구성
 
   // 랜덤 카드 (기본 선택)
   list.appendChild(makeChip("랜덤", "", true, null));
   presets.forEach(p => list.appendChild(makeChip(p.name, p.id, false, p.id)));
-  // 맨 끝: 프롬프트 수정 액션 카드 (선택한 스타일의 프롬프트를 편집)
-  list.appendChild(makeActionChip());
+  // 맨 끝: 선택한 스타일 프롬프트 수정 + 새 스타일 추가 카드
+  list.appendChild(makeActionChip("✎", "프롬프트", openPromptEditor));
+  list.appendChild(makeActionChip("＋", "새 스타일", openAddStyle));
 }
 
-function makeActionChip() {
+function makeActionChip(symbol, label, onClick) {
   const chip = document.createElement("div");
   chip.className = "preset-chip action-chip";
-  chip.dataset.action = "edit-prompt";
 
   const thumb = document.createElement("div");
   thumb.className = "preset-thumb action-thumb";
-  thumb.textContent = "✎";
+  thumb.textContent = symbol;
 
   const labelEl = document.createElement("div");
   labelEl.className = "preset-label";
-  labelEl.textContent = "프롬프트";
+  labelEl.textContent = label;
 
   chip.appendChild(thumb);
   chip.appendChild(labelEl);
-  // 선택 상태를 바꾸지 않고 바로 편집기 오픈
-  chip.addEventListener("click", openPromptEditor);
+  // 선택 상태를 바꾸지 않고 바로 해당 동작 실행
+  chip.addEventListener("click", onClick);
   return chip;
 }
 
@@ -359,19 +360,26 @@ document.getElementById("btn-share").addEventListener("click", async () => {
   }
 });
 
-/* ── 프롬프트 수정 (키오스크 운영자용, 선택된 스타일 대상) ── */
+/* ── 프롬프트 수정/추가 (키오스크 운영자용) ── */
 const promptModal = document.getElementById("modal-prompt");
 const promptTextarea = document.getElementById("prompt-textarea");
+const promptNameInput = document.getElementById("prompt-name-input");
 const promptMsg = document.getElementById("prompt-modal-msg");
+let promptMode = "edit";  // "edit" | "add"
 
+// 기존 스타일의 프롬프트 수정
 async function openPromptEditor() {
   if (!selectedPresetId) {
     alert("‘랜덤’이 아닌 스타일을 먼저 선택하면 그 스타일의 프롬프트를 수정할 수 있어요.");
     return;
   }
+  promptMode = "edit";
+  promptNameInput.classList.add("hidden");
   const chip = document.querySelector(".preset-chip.selected .preset-label");
   document.getElementById("prompt-modal-title").textContent =
     `프롬프트 수정 — ${chip ? chip.textContent : ""}`;
+  document.getElementById("prompt-modal-sub").textContent =
+    "선택한 스타일의 AI 변환 프롬프트를 수정합니다.";
   promptMsg.textContent = "불러오는 중...";
   promptTextarea.value = "";
   promptModal.classList.remove("hidden");
@@ -386,6 +394,19 @@ async function openPromptEditor() {
   }
 }
 
+// 새 스타일 추가 (이름 + 프롬프트)
+function openAddStyle() {
+  promptMode = "add";
+  promptNameInput.classList.remove("hidden");
+  promptNameInput.value = "";
+  promptTextarea.value = "";
+  document.getElementById("prompt-modal-title").textContent = "새 스타일 추가";
+  document.getElementById("prompt-modal-sub").textContent =
+    "이름과 프롬프트를 입력하면 새 스타일이 카드에 추가됩니다.";
+  promptMsg.textContent = "";
+  promptModal.classList.remove("hidden");
+}
+
 // 상단 중앙 'It's you' 텍스트를 누르면 프롬프트 수정 모달이 열린다.
 const camTitle = document.getElementById("cam-title");
 camTitle.addEventListener("click", openPromptEditor);
@@ -394,9 +415,33 @@ camTitle.addEventListener("keydown", (e) => {
 });
 
 document.getElementById("btn-prompt-save").addEventListener("click", async () => {
-  if (!selectedPresetId) return;
   const prompt = promptTextarea.value.trim();
   if (!prompt) { promptMsg.textContent = "프롬프트를 입력하세요."; return; }
+
+  if (promptMode === "add") {
+    const name = promptNameInput.value.trim();
+    if (!name) { promptMsg.textContent = "스타일 이름을 입력하세요."; return; }
+    promptMsg.textContent = "추가 중...";
+    try {
+      const r = await fetch("/kiosk/preset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, prompt }),
+      });
+      if (!r.ok) throw new Error(r.status);
+      const item = await r.json();
+      promptMsg.textContent = "새 스타일이 추가되었습니다.";
+      await loadPresets();             // 카드 목록 갱신
+      selectPresetById(item.id);       // 방금 추가한 스타일 선택
+      setTimeout(() => promptModal.classList.add("hidden"), 800);
+    } catch {
+      promptMsg.textContent = "추가에 실패했습니다.";
+    }
+    return;
+  }
+
+  // edit 모드
+  if (!selectedPresetId) return;
   promptMsg.textContent = "저장 중...";
   try {
     const r = await fetch(`/kiosk/preset/${selectedPresetId}`, {
@@ -411,6 +456,16 @@ document.getElementById("btn-prompt-save").addEventListener("click", async () =>
     promptMsg.textContent = "저장에 실패했습니다.";
   }
 });
+
+// id로 해당 스타일 카드를 선택 상태로 만든다(스크롤 포함)
+function selectPresetById(id) {
+  const chip = document.querySelector(`.preset-chip[data-id="${id}"]`);
+  if (!chip) return;
+  document.querySelectorAll(".preset-chip").forEach(c => c.classList.remove("selected"));
+  chip.classList.add("selected");
+  selectedPresetId = id || null;
+  chip.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+}
 
 document.getElementById("btn-prompt-close").addEventListener("click", () => {
   promptModal.classList.add("hidden");

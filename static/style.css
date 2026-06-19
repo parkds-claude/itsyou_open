@@ -93,6 +93,15 @@ button, .preset-chip, .share-btn, .retry-btn, .icon-btn, .shutter-btn, .modal-cl
   resize: vertical; min-height: 140px;
   font-family: inherit;
 }
+.prompt-name-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 15px;
+  padding: 12px 14px;
+  border: 1px solid #ccc; border-radius: 12px;
+  font-family: inherit;
+}
+.prompt-name-input.hidden { display: none; }
 .prompt-modal-msg { font-size: 13px; color: #666; min-height: 18px; text-align: center; }
 
 /* ── 카운트다운 오버레이 ── */

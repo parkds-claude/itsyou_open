@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="/static/icon-192.png">
-  <link rel="stylesheet" href="/static/style.css?v=3">
+  <link rel="stylesheet" href="/static/style.css?v=4">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
   <script src="/static/qrcode.min.js"></script>
 </head>
@@ -101,6 +101,8 @@
     <div class="modal-box">
       <h3 id="prompt-modal-title">프롬프트 수정</h3>
       <p class="modal-sub" id="prompt-modal-sub">선택한 스타일의 AI 변환 프롬프트를 수정합니다.</p>
+      <input id="prompt-name-input" class="prompt-name-input hidden" type="text"
+             placeholder="스타일 이름 (예: 빈티지 필름)" autocomplete="off">
       <textarea id="prompt-textarea" class="prompt-textarea" rows="8"
                 placeholder="이 스타일의 프롬프트를 입력하세요"></textarea>
       <p id="prompt-modal-msg" class="prompt-modal-msg"></p>
@@ -121,7 +123,7 @@
     </div>
   </div>
 
-  <script src="/static/app.js?v=3"></script>
+  <script src="/static/app.js?v=4"></script>
   <script>
     // PWA 서비스워커 등록(설치 가능 조건 충족). 실패해도 앱 동작엔 영향 없음.
     if ("serviceWorker" in navigator) {
