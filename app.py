@@ -47,6 +47,8 @@ if not _PRESETS_JSON.exists() and _PRESETS_DEFAULT.exists():
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024
+# 정적파일을 브라우저가 오래 캐시하지 않도록(키오스크 업데이트 즉시 반영). 매 요청 재검증.
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 _rate = sec.RateLimiter(per_ip_per_min=5, global_per_min=30)
 
 
