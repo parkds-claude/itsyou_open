@@ -72,6 +72,17 @@ button, .preset-chip, .share-btn, .retry-btn, .icon-btn, .shutter-btn, .modal-cl
 .cam-title { cursor: pointer; user-select: none; -webkit-user-select: none; }
 .cam-title:active { opacity: .6; }
 
+/* ── 스타일 카드 끝의 '프롬프트' 액션 카드 ── */
+.action-thumb {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; line-height: 1;
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  border: 1px dashed rgba(255,255,255,.45);
+  box-sizing: border-box;
+}
+.action-chip .preset-label { font-weight: 600; }
+
 /* ── 프롬프트 수정 모달 ── */
 .prompt-textarea {
   width: 100%;

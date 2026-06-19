@@ -103,6 +103,28 @@ async function loadPresets() {
   // 랜덤 카드 (기본 선택)
   list.appendChild(makeChip("랜덤", "", true, null));
   presets.forEach(p => list.appendChild(makeChip(p.name, p.id, false, p.id)));
+  // 맨 끝: 프롬프트 수정 액션 카드 (선택한 스타일의 프롬프트를 편집)
+  list.appendChild(makeActionChip());
+}
+
+function makeActionChip() {
+  const chip = document.createElement("div");
+  chip.className = "preset-chip action-chip";
+  chip.dataset.action = "edit-prompt";
+
+  const thumb = document.createElement("div");
+  thumb.className = "preset-thumb action-thumb";
+  thumb.textContent = "✎";
+
+  const labelEl = document.createElement("div");
+  labelEl.className = "preset-label";
+  labelEl.textContent = "프롬프트";
+
+  chip.appendChild(thumb);
+  chip.appendChild(labelEl);
+  // 선택 상태를 바꾸지 않고 바로 편집기 오픈
+  chip.addEventListener("click", openPromptEditor);
+  return chip;
 }
 
 function makeChip(label, id, selected, thumbId) {

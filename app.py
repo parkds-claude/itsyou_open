@@ -60,6 +60,14 @@ def _gate():
         return jsonify({"error": "forbidden"}), 403
 
 
+@app.after_request
+def _no_cache_html(resp):
+    # HTML 문서는 캐시하지 않는다 → PWA/브라우저가 항상 최신 화면·스크립트를 받는다.
+    if resp.headers.get("Content-Type", "").startswith("text/html"):
+        resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    return resp
+
+
 @app.get("/")
 def index():
     return render_template("index.html")
