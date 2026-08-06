@@ -1,0 +1,118 @@
+ * Tip: There are .env files present. Install python-dotenv to use them.
+[itsyou_open] 어드민 키: 49538209…  (전체 키는 ~/.itsyou/config.json 의 admin_key)
+[itsyou_open] 어드민 페이지: http://localhost:5080/admin
+[itsyou_open] http://localhost:5080 으로 접속하세요. 같은 와이파이의 폰은 QR로 사진만 받을 수 있습니다.
+ * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5080
+ * Running on http://192.168.0.93:5080
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [06/Aug/2026 16:02:38] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/app.js?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/qrcode.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/style.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /config/status HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /presets HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /sw.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/random_thumb.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/3d-caricature.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/ink-wash.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/cctv.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/vintage-magazine.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/storybook.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/paper-collage.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/3d-chibi.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/fashion-illustration.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/editorial-flat.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/dark-fantasy.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/watercolor-anime.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/street-figure.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/paper-craft.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/double-exposure.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:03:20] "GET /static/presets/doodle-sticker.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:04:32] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:04:33] "[36mGET /static/app.js?v=4 HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:33] "[36mGET /static/qrcode.min.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:33] "[36mGET /static/style.css?v=4 HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:33] "GET /static/manifest.webmanifest HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:04:33] "GET /config/status HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:04:33] "GET /presets HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:04:33] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:33] "GET /static/icon-192.png HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/3d-caricature.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/paper-craft.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/3d-chibi.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/random_thumb.svg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/storybook.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/paper-collage.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/editorial-flat.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/cctv.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/dark-fantasy.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/vintage-magazine.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/watercolor-anime.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/ink-wash.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/fashion-illustration.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/street-figure.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/doodle-sticker.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:04:35] "[36mGET /static/presets/double-exposure.jpg HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:06:02] "POST /snap HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:06:02] "GET /result/506dcf32a87e485b8d8fe06f94840646 HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:06:34] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:06:34] "GET /config/status HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:06:34] "GET /presets HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 16:06:34] "[36mGET /static/manifest.webmanifest HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 16:06:36] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 17:07:46] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 17:07:46] "GET /config/status HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 17:07:46] "GET /presets HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 17:07:47] "[36mGET /static/manifest.webmanifest HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 17:07:50] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 17:09:43] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 17:09:43] "[36mGET /static/manifest.webmanifest HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 17:09:47] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 17:10:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 17:10:03] "GET /config/status HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 17:10:03] "GET /presets HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 17:10:03] "[36mGET /static/manifest.webmanifest HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 17:10:07] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [06/Aug/2026 17:12:50] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 17:12:50] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [06/Aug/2026 17:12:51] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 17:12:52] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [06/Aug/2026 20:27:57] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:28:01] "GET /static/icon-192.png HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:28:04] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [06/Aug/2026 20:30:37] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:30:38] "GET /static/icon-192.png HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:30:39] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [06/Aug/2026 20:41:06] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/qrcode.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/app.js?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/style.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/manifest.webmanifest HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /presets HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /config/status HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /sw.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/fashion-illustration.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/icon-192.png HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/paper-collage.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/paper-craft.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/street-figure.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/vintage-magazine.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/ink-wash.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/random_thumb.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/3d-chibi.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/3d-caricature.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/editorial-flat.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/cctv.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/watercolor-anime.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/double-exposure.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/storybook.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/doodle-sticker.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2026 20:41:07] "GET /static/presets/dark-fantasy.jpg HTTP/1.1" 200 -
