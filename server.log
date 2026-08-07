@@ -258,3 +258,4 @@
 127.0.0.1 - - [08/Aug/2026 03:08:36] "GET /static/presets/doodle-sticker.jpg HTTP/1.1" 200 -
 127.0.0.1 - - [08/Aug/2026 03:08:54] "GET /config/status HTTP/1.1" 200 -
 127.0.0.1 - - [08/Aug/2026 03:24:44] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [08/Aug/2026 04:25:19] "[33mGET /.git/config HTTP/1.1[0m" 404 -
