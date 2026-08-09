@@ -373,3 +373,5 @@
 127.0.0.1 - - [09/Aug/2026 17:39:48] "[33mGET /cms/wp-includes/wlwmanifest.xml HTTP/1.1[0m" 404 -
 127.0.0.1 - - [09/Aug/2026 17:39:48] "[33mGET /sito/wp-includes/wlwmanifest.xml HTTP/1.1[0m" 404 -
 127.0.0.1 - - [09/Aug/2026 17:46:21] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [09/Aug/2026 18:03:50] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [09/Aug/2026 18:03:52] "GET /static/icon-192.png HTTP/1.1" 200 -
