@@ -534,3 +534,6 @@
 127.0.0.1 - - [11/Aug/2026 20:20:57] "[33mGET /site/wp-includes/wlwmanifest.xml HTTP/1.1[0m" 404 -
 127.0.0.1 - - [11/Aug/2026 20:20:57] "[33mGET /cms/wp-includes/wlwmanifest.xml HTTP/1.1[0m" 404 -
 127.0.0.1 - - [11/Aug/2026 20:34:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Aug/2026 23:16:28] "[33mGET /media/system/js/core.js HTTP/1.1[0m" 404 -
+127.0.0.1 - - [11/Aug/2026 23:16:29] "[33mGET /wp-includes/js/jquery/jquery.js HTTP/1.1[0m" 404 -
+127.0.0.1 - - [11/Aug/2026 23:18:46] "GET / HTTP/1.1" 200 -
