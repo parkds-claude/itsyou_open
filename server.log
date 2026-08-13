@@ -641,3 +641,6 @@
 127.0.0.1 - - [13/Aug/2026 20:25:52] "GET /static/qrcode.min.js HTTP/1.1" 200 -
 127.0.0.1 - - [13/Aug/2026 20:25:52] "GET /static/app.js?v=4 HTTP/1.1" 200 -
 127.0.0.1 - - [13/Aug/2026 20:25:52] "GET /static/style.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [13/Aug/2026 22:42:04] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [13/Aug/2026 22:42:10] "GET /static/icon-192.png HTTP/1.1" 200 -
+127.0.0.1 - - [13/Aug/2026 22:42:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
