@@ -827,3 +827,15 @@
 127.0.0.1 - - [15/Aug/2026 00:26:30] "[33mGET /.well-known/stripe.txt HTTP/1.1[0m" 404 -
 127.0.0.1 - - [15/Aug/2026 00:26:30] "GET /?phpinfo=1 HTTP/1.1" 200 -
 127.0.0.1 - - [15/Aug/2026 00:26:30] "[33mGET /.well-known/stripe/ HTTP/1.1[0m" 404 -
+127.0.0.1 - - [15/Aug/2026 06:55:56] "[33mGET /.amper/challenge/fp.js HTTP/1.1[0m" 404 -
+127.0.0.1 - - [15/Aug/2026 06:55:57] "[33mGET /tracking.php HTTP/1.1[0m" 404 -
+127.0.0.1 - - [15/Aug/2026 06:55:57] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [15/Aug/2026 06:55:58] "[33mGET /assets/js/telegram_redirect.js HTTP/1.1[0m" 404 -
+127.0.0.1 - - [15/Aug/2026 06:55:58] "[33mGET /setup/ HTTP/1.1[0m" 404 -
+127.0.0.1 - - [15/Aug/2026 06:55:59] "[36mGET /static/qrcode.min.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Aug/2026 06:56:00] "[36mGET /static/app.js?v=4 HTTP/1.1[0m" 304 -
+127.0.0.1 - - [15/Aug/2026 06:56:00] "[33mPOST /_internal/api/setup.php?action=exists HTTP/1.1[0m" 404 -
+127.0.0.1 - - [15/Aug/2026 06:56:01] "[33mPOST /_internal/api/setup.php?action=exists HTTP/1.1[0m" 404 -
+127.0.0.1 - - [15/Aug/2026 06:56:01] "[33mPOST /.rt/verify HTTP/1.1[0m" 404 -
+127.0.0.1 - - [15/Aug/2026 06:56:01] "[33mGET /set_captcha_validated.php HTTP/1.1[0m" 404 -
+127.0.0.1 - - [15/Aug/2026 06:56:01] "[33mGET /api/ HTTP/1.1[0m" 404 -
