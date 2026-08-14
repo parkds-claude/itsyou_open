@@ -662,3 +662,14 @@
 127.0.0.1 - - [14/Aug/2026 03:18:21] "GET / HTTP/1.1" 200 -
 127.0.0.1 - - [14/Aug/2026 03:18:23] "[36mGET /static/icon-192.png HTTP/1.1[0m" 304 -
 127.0.0.1 - - [14/Aug/2026 03:18:26] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+ * Tip: There are .env files present. Install python-dotenv to use them.
+[itsyou_open] 어드민 키: 49538209…  (전체 키는 ~/.itsyou/config.json 의 admin_key)
+[itsyou_open] 어드민 페이지: http://localhost:5080/admin
+[itsyou_open] http://localhost:5080 으로 접속하세요. 같은 와이파이의 폰은 QR로 사진만 받을 수 있습니다.
+ * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5080
+ * Running on http://192.168.0.165:5080
+[33mPress CTRL+C to quit[0m
