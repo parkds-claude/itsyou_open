@@ -1039,3 +1039,4 @@
 127.0.0.1 - - [21/Aug/2026 07:37:54] "[33mGET /appsettings.Development.json HTTP/1.1[0m" 404 -
 127.0.0.1 - - [21/Aug/2026 07:37:54] "[33mGET /.git/config HTTP/1.1[0m" 404 -
 127.0.0.1 - - [21/Aug/2026 07:37:54] "[33mGET /.git/HEAD HTTP/1.1[0m" 404 -
+127.0.0.1 - - [21/Aug/2026 09:02:12] "[33mGET /.env HTTP/1.1[0m" 404 -
