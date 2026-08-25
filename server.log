@@ -1124,3 +1124,4 @@
 127.0.0.1 - - [25/Aug/2026 11:23:55] "[33mGET /site/wp-includes/wlwmanifest.xml HTTP/1.1[0m" 404 -
 127.0.0.1 - - [25/Aug/2026 11:23:55] "[33mGET /cms/wp-includes/wlwmanifest.xml HTTP/1.1[0m" 404 -
 127.0.0.1 - - [25/Aug/2026 11:23:55] "[33mGET /sito/wp-includes/wlwmanifest.xml HTTP/1.1[0m" 404 -
+127.0.0.1 - - [25/Aug/2026 12:26:35] "GET / HTTP/1.1" 200 -
