@@ -1456,3 +1456,4 @@
 [33mPress CTRL+C to quit[0m
 127.0.0.1 - - [31/Aug/2026 09:41:15] "GET / HTTP/1.1" 200 -
 127.0.0.1 - - [31/Aug/2026 10:28:18] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [31/Aug/2026 12:32:31] "[33mGET /wp-json/gravitysmtp/v1/tests/mock-data?page=gravitysmtp-settings HTTP/1.1[0m" 404 -
