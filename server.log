@@ -1490,3 +1490,9 @@
 127.0.0.1 - - [01/Sep/2026 10:29:47] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
 127.0.0.1 - - [01/Sep/2026 10:34:51] "[33mGET /wp-login.php HTTP/1.1[0m" 404 -
 127.0.0.1 - - [01/Sep/2026 12:36:12] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2026 12:39:23] "GET /static/app.js?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2026 12:39:23] "GET /sw.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2026 12:39:23] "GET /static/qrcode.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2026 12:39:23] "[33mGET /sw.js.map HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Sep/2026 12:39:23] "[33mGET /static/app.js.map HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Sep/2026 12:39:23] "[33mGET /static/qrcode.min.js.map HTTP/1.1[0m" 404 -
