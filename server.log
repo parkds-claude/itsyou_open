@@ -1521,3 +1521,5 @@
 127.0.0.1 - - [01/Sep/2026 17:29:21] "[33mGET /api/.git/config HTTP/1.1[0m" 404 -
 127.0.0.1 - - [01/Sep/2026 17:29:21] "[33mGET /site/.git/config HTTP/1.1[0m" 404 -
 127.0.0.1 - - [01/Sep/2026 17:29:22] "[33mGET /var/www/.git/config HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Sep/2026 18:10:02] "[33mPOST /wp-json/batch/v1 HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Sep/2026 18:10:02] "[31m[1mPOST /?rest_route=/batch/v1 HTTP/1.1[0m" 405 -
