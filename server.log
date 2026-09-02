@@ -1574,3 +1574,6 @@
 127.0.0.1 - - [03/Sep/2026 00:07:16] "GET / HTTP/1.1" 200 -
 127.0.0.1 - - [03/Sep/2026 00:07:18] "GET /static/icon-192.png HTTP/1.1" 200 -
 127.0.0.1 - - [03/Sep/2026 00:07:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [03/Sep/2026 01:13:11] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [03/Sep/2026 01:13:12] "[33mGET /wp-includes/css/buttons.css HTTP/1.1[0m" 404 -
+127.0.0.1 - - [03/Sep/2026 01:13:13] "[33mGET /media/system/js/core.js HTTP/1.1[0m" 404 -
