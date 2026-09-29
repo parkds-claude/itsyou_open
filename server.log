@@ -2095,3 +2095,6 @@
 127.0.0.1 - - [29/Sep/2026 15:00:07] "[33mGET /core/phpinfo.php HTTP/1.1[0m" 404 -
 127.0.0.1 - - [29/Sep/2026 15:00:08] "[33mGET /includes/phpinfo.php HTTP/1.1[0m" 404 -
 127.0.0.1 - - [29/Sep/2026 15:00:08] "[33mGET /wp-json/gravitysmtp/v1/tests/mock-data?page=gravitysmtp-settings HTTP/1.1[0m" 404 -
+127.0.0.1 - - [29/Sep/2026 16:58:20] "[33mGET /.git/config HTTP/1.1[0m" 404 -
+127.0.0.1 - - [29/Sep/2026 16:58:20] "[33mGET /.git-credentials HTTP/1.1[0m" 404 -
+127.0.0.1 - - [29/Sep/2026 16:58:20] "[33mGET /.config/git/config HTTP/1.1[0m" 404 -
