@@ -1828,3 +1828,5 @@
  * Running on http://127.0.0.1:5080
  * Running on http://192.168.0.165:5080
 [33mPress CTRL+C to quit[0m
+127.0.0.1 - - [29/Sep/2026 09:34:32] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [29/Sep/2026 09:34:42] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
