@@ -2320,3 +2320,9 @@
 127.0.0.1 - - [07/Oct/2026 00:46:46] "[36mGET /static/presets/thumb/storybook.webp HTTP/1.1[0m" 304 -
 127.0.0.1 - - [07/Oct/2026 00:46:47] "[32mGET / HTTP/1.1[0m" 301 -
 127.0.0.1 - - [07/Oct/2026 00:46:47] "HEAD / HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 02:24:12] "[32mGET /api/session/properties HTTP/1.1[0m" 301 -
+127.0.0.1 - - [07/Oct/2026 02:24:13] "[31m[1mGET /api/session/properties HTTP/1.1[0m" 401 -
+127.0.0.1 - - [07/Oct/2026 02:24:13] "[31m[1mGET /api/session/properties HTTP/1.1[0m" 401 -
+127.0.0.1 - - [07/Oct/2026 02:24:26] "[31m[1mPOST /api/session/reset_password HTTP/1.1[0m" 401 -
+127.0.0.1 - - [07/Oct/2026 02:24:28] "[31m[1mPOST /api/session/reset_password HTTP/1.1[0m" 401 -
+127.0.0.1 - - [07/Oct/2026 02:24:29] "[31m[1mPOST /api/session/reset_password HTTP/1.1[0m" 401 -
