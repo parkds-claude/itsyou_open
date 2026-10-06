@@ -58,17 +58,31 @@ def came_through_proxy(headers) -> bool:
     return any(h in headers for h in _PROXY_HEADERS)
 
 
-def is_local(remote_addr: str, proxied: bool = False) -> bool:
-    """정말 이 컴퓨터에서 직접 온 요청인가 — 중계된 요청은 주소가 127.0.0.1 이어도 아니다."""
-    return remote_addr in _LOCALHOST and not proxied
+def host_is_this_computer(host) -> bool:
+    """요청이 localhost 라는 이름으로 왔는가(Host 헤더). 터널·프록시를 거치면 여기에 공개 도메인이 들어 있다.
+    프록시 헤더가 떼어진 채 넘어온 요청과 DNS rebinding 을 한 번 더 거른다."""
+    host = (host or "").strip().lower()
+    if host.startswith("["):                       # [::1]:5080
+        name = host[1:host.find("]")] if "]" in host else host
+    elif host.count(":") == 1:                     # localhost:5080
+        name = host.split(":")[0]
+    else:
+        name = host
+    return name in ("localhost", "127.0.0.1", "::1")
 
 
-def is_trusted(remote_addr: str, proxied: bool = False) -> bool:
+def is_local(remote_addr: str, proxied: bool = False, local_host: bool = True) -> bool:
+    """정말 이 컴퓨터에서 직접 온 요청인가 — 중계됐거나 바깥 이름으로 들어온 요청은 주소가 127.0.0.1 이어도 아니다.
+    local_host: 접속한 주소 이름이 localhost 인가(host_is_this_computer)."""
+    return remote_addr in _LOCALHOST and not proxied and local_host
+
+
+def is_trusted(remote_addr: str, proxied: bool = False, local_host: bool = True) -> bool:
     """localhost 이거나 ITSYOU_KIOSK_IPS 에 포함된 출처면 True. 중계된 요청은 주소로 판단할 수 없으므로 False."""
     if proxied:
         return False
     if remote_addr in _LOCALHOST:
-        return True
+        return local_host
     try:
         ip = ipaddress.ip_address(remote_addr)
     except ValueError:
@@ -82,16 +96,17 @@ def is_local_only(path: str) -> bool:
     return lp.startswith(_LOCALHOST_ONLY_PREFIXES) or lp.startswith(_TRUSTED_PREFIXES)
 
 
-def is_allowed(path: str, remote_addr: str, proxied: bool = False, kiosk_session: bool = False) -> bool:
+def is_allowed(path: str, remote_addr: str, proxied: bool = False, kiosk_session: bool = False,
+               local_host: bool = True) -> bool:
     """kiosk_session: 공용 비밀번호를 통과한 기기(신뢰 IP 와 같은 권한 — 촬영·프롬프트 편집까지)."""
     # 대소문자 무시로 우회 차단. localhost 전용이 신뢰IP 허용보다 우선.
     lp = path.lower()
-    trusted = kiosk_session or is_trusted(remote_addr, proxied)
+    trusted = kiosk_session or is_trusted(remote_addr, proxied, local_host)
     if lp == "/config/status":
         # 화면이 처음 뜰 때 읽는 '설정됐는가' 한 줄(키는 들어 있지 않다). 촬영 기기가 못 읽으면 키 입력 화면이 뜬다.
         return trusted
     if lp.startswith(_LOCALHOST_ONLY_PREFIXES):
-        return is_local(remote_addr, proxied)
+        return is_local(remote_addr, proxied, local_host)
     if lp.startswith(_TRUSTED_PREFIXES):
         return trusted
     return True

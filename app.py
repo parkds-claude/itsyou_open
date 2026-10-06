@@ -66,7 +66,8 @@ def _has_kiosk_session(pin: str) -> bool:
 
 
 def _is_local() -> bool:
-    return sec.is_local(request.remote_addr, sec.came_through_proxy(request.headers))
+    return sec.is_local(request.remote_addr, sec.came_through_proxy(request.headers),
+                        sec.host_is_this_computer(request.host))
 
 
 @app.before_request
@@ -84,17 +85,25 @@ def _force_https():
 def _gate():
     if request.path.startswith("/static/"):
         return None
+    # 다른 사이트의 페이지가 이 기기의 브라우저를 시켜 대신 보내는 요청(CSRF)은 받지 않는다.
+    # 브라우저는 교차 출처 요청에 Origin 을 붙인다. Origin 이 없는 요청(앱·도구)은 그대로 둔다.
+    if request.method not in ("GET", "HEAD", "OPTIONS"):
+        origin = request.headers.get("Origin")
+        if origin is not None and urlsplit(origin).netloc.lower() != request.host.lower():
+            return jsonify({"error": "cross-site request"}), 403
     pin = cs.get_kiosk_pin()
     proxied = sec.came_through_proxy(request.headers)
+    local_host = sec.host_is_this_computer(request.host)
     session_ok = _has_kiosk_session(pin)
     # 공용 비밀번호가 걸려 있으면: 믿는 출처(이 컴퓨터·신뢰 IP)도 아니고 비밀번호도 안 넣은 기기에는
     # 사진 받기 같은 열린 경로만 내주고, 첫 화면 자리에는 비밀번호 화면을 보여 준다.
-    if (pin and not session_ok and not sec.is_trusted(request.remote_addr, proxied)
+    if (pin and not session_ok and not sec.is_trusted(request.remote_addr, proxied, local_host)
             and not sec.is_open_without_pin(request.path)):
-        if request.method == "GET" and request.path == "/":
+        if request.method in ("GET", "HEAD") and request.path == "/":
             return render_template("pin.html")
         return jsonify({"error": "pin required"}), 401
-    if not sec.is_allowed(request.path, request.remote_addr, proxied=proxied, kiosk_session=session_ok):
+    if not sec.is_allowed(request.path, request.remote_addr, proxied=proxied, kiosk_session=session_ok,
+                          local_host=local_host):
         return jsonify({"error": "forbidden"}), 403
 
 

@@ -96,3 +96,20 @@ def test_session_secret_is_generated_once(tmp_path, monkeypatch):
     a = cs.get_or_create_session_secret()
     assert len(a) >= 32
     assert cs.get_or_create_session_secret() == a
+
+
+def test_failed_write_keeps_the_old_settings(tmp_path, monkeypatch):
+    # 쓰다가 실패해도(또는 쓰는 도중 누가 읽어도) 기존 설정이 비어 보이면 안 된다 — 빈 설정으로 덮어써 키가 날아간다.
+    _reset(tmp_path, monkeypatch)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    cs.set_key("gemini", "k-123")
+
+    def boom(*a, **k):
+        raise OSError("disk full")
+    monkeypatch.setattr(cs.json, "dump", boom)
+    with pytest.raises(OSError):
+        cs.set_kiosk_pin("2468")
+    monkeypatch.undo()
+    _reset(tmp_path, monkeypatch)
+    assert cs.get_key("gemini") == "k-123"
+    assert [p.name for p in (tmp_path / ".itsyou").iterdir()] == ["config.json"]      # 임시 파일도 남기지 않는다

@@ -22,6 +22,8 @@ def booth(monkeypatch):
     monkeypatch.setattr(app_module.cs, "get_kiosk_pin", lambda: state["pin"])
     monkeypatch.setattr(app_module.cs, "get_or_create_session_secret", lambda: "test-secret")
     monkeypatch.setattr(app_module, "_pin_guard", sec.PinGuard())
+    # 촬영 횟수 제한은 프로세스 전체가 나눠 쓴다 — 다른 시험이 쓴 횟수가 넘어오지 않게 새것으로 바꾼다.
+    monkeypatch.setattr(app_module, "_rate", sec.RateLimiter(per_ip_per_min=5, global_per_min=30))
     flask_app.config["TESTING"] = True
     return state
 
@@ -142,3 +144,34 @@ def test_without_a_pin_tunnel_visitors_are_strangers(booth):
     assert _get(c, "/kiosk/preset/storybook").status_code == 403
     assert _get(c, "/admin/api/auth").status_code == 403
     assert _login(c).status_code == 404                     # 비밀번호 기능이 꺼져 있다
+
+
+# ── 독립 검토 보강 ───────────────────────────────────────────────────────────
+
+def test_public_host_name_without_proxy_headers_is_still_an_outsider(booth):
+    # 프록시 헤더가 떼어진 채 넘어온 요청: 주소는 127.0.0.1 이지만 접속한 이름이 바깥 도메인이다.
+    c = flask_app.test_client()
+    assert PIN_SCREEN in c.get("/", base_url=BASE).data
+    assert c.post("/snap", base_url=BASE).status_code == 401
+    booth["pin"] = ""
+    assert c.post("/snap", base_url=BASE).status_code == 403
+    assert c.post("/config/key", json={"provider": "gemini", "key": "k"}, base_url=BASE).status_code == 403
+    assert c.get("/admin/api/auth", base_url=BASE).status_code == 403
+
+
+def test_other_sites_cannot_send_requests_on_a_devices_behalf(booth):
+    c = flask_app.test_client()
+    _login(c)
+    snap = dict(data={}, content_type="multipart/form-data", base_url=BASE)
+    evil = {**VIA_TUNNEL, "Origin": "https://evil.example"}
+    same = {**VIA_TUNNEL, "Origin": "https://booth.example"}
+    assert c.post("/snap", headers=evil, **snap).status_code == 403
+    assert c.put("/kiosk/preset/storybook", headers=evil, json={"prompt": "x"}, base_url=BASE).status_code == 403
+    assert c.post("/pin", headers=evil, json={"pin": PIN}, base_url=BASE).status_code == 403
+    assert c.post("/snap", headers=same, **snap).status_code == 400          # 같은 사이트에서 보낸 것은 통과(사진이 없을 뿐)
+    assert c.post("/snap", headers=VIA_TUNNEL, **snap).status_code == 400    # Origin 이 없는 요청(앱·도구)도 통과
+
+
+def test_head_request_for_first_screen_is_answered_like_get(booth):
+    r = flask_app.test_client().head("/", headers=VIA_TUNNEL, base_url=BASE)
+    assert r.status_code == 200

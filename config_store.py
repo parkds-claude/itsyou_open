@@ -3,6 +3,7 @@
 import json
 import os
 import secrets
+import tempfile
 import threading
 from pathlib import Path
 
@@ -10,16 +11,27 @@ _DIR = Path.home() / ".itsyou"
 _CONFIG = _DIR / "config.json"
 _USAGE = _DIR / "usage.json"
 _USAGE_LOCK = threading.Lock()
+# 설정 파일의 읽고-고쳐-쓰기를 한 번에 하나씩만(키·어드민 키·비밀번호·서명 열쇠가 한 파일에 있다)
+_CONFIG_LOCK = threading.RLock()
 
 _ENV = {"gemini": "GEMINI_API_KEY", "openai": "OPENAI_API_KEY"}
 
 
 def _write_600(path: Path, data: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    # umask 레이스를 피하려 처음부터 0o600으로 생성
-    fd = os.open(str(path), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w") as f:
-        json.dump(data, f)
+    # 임시 파일에 다 쓴 뒤 한 번에 바꿔 끼운다. 제자리에서 비우고 쓰면, 쓰는 도중에 읽은 쪽이 '설정 없음'으로
+    # 착각해 빈 설정을 덮어쓸 수 있다(API 키가 날아간다). mkstemp 는 처음부터 0o600 으로 만든다.
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=path.name + ".")
+    try:
+        with os.fdopen(fd, "w") as f:
+            json.dump(data, f)
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
 
 
 def _read(path: Path) -> dict:
@@ -40,10 +52,11 @@ def _config() -> dict:
 def set_key(provider: str, key: str) -> None:
     if provider not in _ENV:
         raise ValueError("unknown provider")
-    cfg = _config()
-    cfg[f"{provider}_key"] = key.strip()
-    cfg["provider"] = provider
-    _write_600(_CONFIG, cfg)
+    with _CONFIG_LOCK:
+        cfg = _config()
+        cfg[f"{provider}_key"] = key.strip()
+        cfg["provider"] = provider
+        _write_600(_CONFIG, cfg)
 
 
 def get_key(provider: str) -> str:
@@ -74,13 +87,14 @@ def get_or_create_admin_key() -> str:
     env = os.environ.get("ADMIN_KEY", "").strip()
     if env:
         return env
-    cfg = _config()
-    k = cfg.get("admin_key")
-    if not k:
-        k = secrets.token_hex(32)
-        cfg["admin_key"] = k
-        _write_600(_CONFIG, cfg)
-    return k
+    with _CONFIG_LOCK:
+        cfg = _config()
+        k = cfg.get("admin_key")
+        if not k:
+            k = secrets.token_hex(32)
+            cfg["admin_key"] = k
+            _write_600(_CONFIG, cfg)
+        return k
 
 
 def get_kiosk_pin() -> str:
@@ -94,23 +108,25 @@ def set_kiosk_pin(pin: str) -> None:
     pin = pin.strip()
     if pin and not (pin.isascii() and pin.isdigit() and 4 <= len(pin) <= 12):
         raise ValueError("pin must be 4-12 digits")
-    cfg = _config()
-    if pin:
-        cfg["kiosk_pin"] = pin
-    else:
-        cfg.pop("kiosk_pin", None)
-    _write_600(_CONFIG, cfg)
+    with _CONFIG_LOCK:
+        cfg = _config()
+        if pin:
+            cfg["kiosk_pin"] = pin
+        else:
+            cfg.pop("kiosk_pin", None)
+        _write_600(_CONFIG, cfg)
 
 
 def get_or_create_session_secret() -> str:
     """비밀번호를 통과한 기기에 주는 표(쿠키)를 서명하는 서버 열쇠. 한 번 만들어 계속 쓴다."""
-    cfg = _config()
-    k = cfg.get("session_secret")
-    if not k:
-        k = secrets.token_hex(32)
-        cfg["session_secret"] = k
-        _write_600(_CONFIG, cfg)
-    return k
+    with _CONFIG_LOCK:
+        cfg = _config()
+        k = cfg.get("session_secret")
+        if not k:
+            k = secrets.token_hex(32)
+            cfg["session_secret"] = k
+            _write_600(_CONFIG, cfg)
+        return k
 
 
 def incr_usage(day: str) -> int:

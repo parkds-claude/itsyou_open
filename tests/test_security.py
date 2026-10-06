@@ -135,3 +135,26 @@ def test_pin_guard_success_gives_the_try_back():
     for _ in range(50):                # 맞게 넣는 기기가 아무리 많아도 잠기지 않는다
         assert g.begin() is True
         g.succeeded()
+
+
+# ── '이 컴퓨터' 판정 보강: 접속한 주소 이름(Host)도 localhost 여야 한다 ──────────────
+
+def test_host_name_must_be_this_computer():
+    for host in ("localhost", "localhost:5080", "127.0.0.1:5080", "[::1]:5080", "::1", "LOCALHOST:5080"):
+        assert sec.host_is_this_computer(host) is True, host
+    for host in ("booth.example", "192.168.0.5:5080", "localhost.evil.example", "evil.example:127.0.0.1", "", None):
+        assert sec.host_is_this_computer(host) is False, host
+
+
+def test_localhost_address_with_public_host_name_is_not_local():
+    # 프록시 헤더가 떼어진 채 넘어온 터널 요청, DNS rebinding — 주소는 127.0.0.1 이지만 이름은 바깥 도메인이다.
+    for path in ("/snap", "/kiosk/preset/x", "/config/key", "/config/status", "/admin/api/presets"):
+        assert sec.is_allowed(path, "127.0.0.1", local_host=False) is False, path
+    assert sec.is_trusted("127.0.0.1", local_host=False) is False
+
+
+def test_trusted_kiosk_ip_does_not_need_a_localhost_name(monkeypatch):
+    # 같은 와이파이의 신뢰 기기는 당연히 서버의 LAN 주소로 들어온다 — 이름 검사는 localhost 판정에만 쓴다.
+    monkeypatch.setattr(sec, "_TRUSTED_NETS", [ipaddress.ip_network("192.168.0.0/24")])
+    assert sec.is_allowed("/snap", "192.168.0.7", local_host=False) is True
+    assert sec.is_allowed("/config/key", "192.168.0.7", local_host=False) is False
