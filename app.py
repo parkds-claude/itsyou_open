@@ -7,6 +7,7 @@ import threading
 import uuid
 from datetime import date
 from pathlib import Path
+from urllib.parse import urlsplit
 from flask import Flask, jsonify, redirect, request, send_file, abort, render_template
 
 from PIL import Image
@@ -59,7 +60,8 @@ def _force_https():
     # 헤더가 없는 운용(localhost·같은 와이파이)은 그대로다. 되돌리려면 이 함수만 지우면 된다.
     if sec.visitor_used_plain_http(request.headers.get("CF-Visitor", "")):
         code = 301 if request.method in ("GET", "HEAD") else 308   # 308: POST 를 GET 으로 바꾸지 않는다
-        return redirect(request.url.replace("http://", "https://", 1), code=code)
+        # 주소의 맨 앞(접속 방식)만 바꾼다 — 뒤쪽 질의문에 들어 있는 http:// 글자는 건드리지 않는다.
+        return redirect(urlsplit(request.url)._replace(scheme="https").geturl(), code=code)
 
 
 @app.before_request

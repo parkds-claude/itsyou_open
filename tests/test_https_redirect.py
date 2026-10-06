@@ -50,3 +50,32 @@ def test_broken_proxy_header_is_ignored():
     for bad in ("not-json", "[]", '{"scheme":5}', ""):
         r = _client().get("/healthz", headers={"CF-Visitor": bad}, base_url=BASE)
         assert r.status_code == 200, bad
+
+
+def test_head_request_gets_301_like_get():
+    r = _client().head("/", headers=CF_HTTP, base_url=BASE)
+    assert r.status_code == 301
+
+
+def test_port_in_address_is_kept():
+    r = _client().get("/healthz", headers=CF_HTTP, base_url="http://booth.example:8080")
+    assert r.headers["Location"] == "https://booth.example:8080/healthz"
+
+
+def test_redirect_comes_before_access_policy():
+    # http 로 온 바깥 방문자의 민감 경로는 403 이 아니라 먼저 https 로 넘어간다(정책은 https 에서 적용).
+    r = _client().get("/config/status", headers=CF_HTTP, base_url=BASE,
+                      environ_overrides={"REMOTE_ADDR": "192.168.0.9"})
+    assert r.status_code == 301
+
+
+def test_only_the_scheme_changes_not_the_query():
+    # 앱이 직접 https 를 여는 운용(ITSYOU_TLS_CERT) + Cloudflare: 주소 뒤쪽의 http:// 글자는 건드리지 않는다.
+    r = _client().get("/?u=http://x.example/a", headers=CF_HTTP, base_url="https://booth.example")
+    assert r.headers["Location"] == "https://booth.example/?u=http://x.example/a"
+
+
+def test_absurd_proxy_header_is_ignored_not_crashed():
+    # 깊게 겹친 JSON 은 파서를 넘어뜨린다 — 500 이 아니라 그냥 무시해야 한다.
+    r = _client().get("/healthz", headers={"CF-Visitor": "[" * 5000}, base_url=BASE)
+    assert r.status_code == 200

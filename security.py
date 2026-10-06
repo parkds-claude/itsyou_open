@@ -73,6 +73,8 @@ def visitor_used_plain_http(cf_visitor: str) -> bool:
     """Cloudflare 가 붙이는 CF-Visitor 헤더(예: {"scheme":"http"})로 방문자가 암호화 없이 들어왔는지 본다.
     헤더가 없거나 깨져 있으면 False — 내 컴퓨터·같은 와이파이 단독 운용(http)은 건드리지 않는다.
     접근 권한 판단에는 쓰지 않는다(위 정책은 여전히 프록시 헤더를 믿지 않는다)."""
+    if len(cf_visitor) > 64:        # 정상 값은 20자 안팎. 길고 깊게 겹친 JSON 은 파서를 넘어뜨린다(RecursionError)
+        return False
     try:
         return json.loads(cf_visitor or "").get("scheme") == "http"
     except (ValueError, AttributeError):
