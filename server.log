@@ -2135,3 +2135,50 @@
 127.0.0.1 - - [30/Sep/2026 06:06:04] "GET / HTTP/1.1" 200 -
 127.0.0.1 - - [30/Sep/2026 06:06:05] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
 127.0.0.1 - - [30/Sep/2026 13:25:27] "GET / HTTP/1.1" 200 -
+ * Tip: There are .env files present. Install python-dotenv to use them.
+[itsyou_open] 어드민 키: 49538209…  (전체 키는 ~/.itsyou/config.json 의 admin_key)
+[itsyou_open] 어드민 페이지: http://localhost:5080/admin
+[itsyou_open] http://localhost:5080 으로 접속하세요. 같은 와이파이의 폰은 QR로 사진만 받을 수 있습니다.
+ * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5080
+ * Running on http://192.168.0.165:5080
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [07/Oct/2026 00:15:30] "GET /healthz HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:15:30] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:15:31] "[32mGET / HTTP/1.1[0m" 301 -
+127.0.0.1 - - [07/Oct/2026 00:15:31] "[32mGET /healthz?x=1 HTTP/1.1[0m" 301 -
+127.0.0.1 - - [07/Oct/2026 00:15:31] "[32mGET / HTTP/1.1[0m" 301 -
+127.0.0.1 - - [07/Oct/2026 00:15:31] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:15:32] "GET /static/presets/thumb/storybook.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:15:32] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:15:33] "GET /static/app.js?v=5 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:15:33] "GET /presets HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "GET /static/manifest.webmanifest HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "GET /static/qrcode.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "GET /static/style.css?v=4 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "GET /static/app.js?v=5 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "GET /config/status HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "GET /presets HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "GET /static/icon-192.png HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "GET /sw.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:22] "GET /static/presets/thumb/fashion-illustration.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/doodle-sticker.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/random_thumb.svg HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/3d-caricature.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/watercolor-anime.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/ink-wash.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/3d-chibi.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/dark-fantasy.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/storybook.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/cctv.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/paper-craft.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/vintage-magazine.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/double-exposure.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/paper-collage.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/editorial-flat.webp HTTP/1.1" 200 -
+127.0.0.1 - - [07/Oct/2026 00:16:23] "GET /static/presets/thumb/street-figure.webp HTTP/1.1" 200 -
