@@ -7,7 +7,7 @@ import threading
 import uuid
 from datetime import date
 from pathlib import Path
-from flask import Flask, jsonify, request, send_file, abort, render_template
+from flask import Flask, jsonify, redirect, request, send_file, abort, render_template
 
 from PIL import Image
 import itsyou_presets as ip
@@ -50,6 +50,16 @@ app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024
 # 정적파일을 브라우저가 오래 캐시하지 않도록(키오스크 업데이트 즉시 반영). 매 요청 재검증.
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 _rate = sec.RateLimiter(per_ip_per_min=5, global_per_min=30)
+
+
+@app.before_request
+def _force_https():
+    # Cloudflare(터널 포함) 뒤에서 방문자가 http 로 들어오면 https 로 넘긴다 — 셀카가 암호화 없이 오가지 않게.
+    # 터널 뒤의 앱은 늘 http 로 받으므로 방문자의 접속 방식은 CF-Visitor 로만 알 수 있다.
+    # 헤더가 없는 운용(localhost·같은 와이파이)은 그대로다. 되돌리려면 이 함수만 지우면 된다.
+    if sec.visitor_used_plain_http(request.headers.get("CF-Visitor", "")):
+        code = 301 if request.method in ("GET", "HEAD") else 308   # 308: POST 를 GET 으로 바꾸지 않는다
+        return redirect(request.url.replace("http://", "https://", 1), code=code)
 
 
 @app.before_request

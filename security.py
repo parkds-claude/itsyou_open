@@ -8,6 +8,7 @@ X-Forwarded-For는 신뢰하지 않는다.
 예) ITSYOU_KIOSK_IPS="192.168.0.42"  또는  "192.168.0.0/24"
 """
 import ipaddress
+import json
 import os
 import threading
 import time
@@ -66,6 +67,16 @@ def is_allowed(path: str, remote_addr: str) -> bool:
     if lp.startswith(_TRUSTED_PREFIXES):
         return is_trusted(remote_addr)
     return True
+
+
+def visitor_used_plain_http(cf_visitor: str) -> bool:
+    """Cloudflare 가 붙이는 CF-Visitor 헤더(예: {"scheme":"http"})로 방문자가 암호화 없이 들어왔는지 본다.
+    헤더가 없거나 깨져 있으면 False — 내 컴퓨터·같은 와이파이 단독 운용(http)은 건드리지 않는다.
+    접근 권한 판단에는 쓰지 않는다(위 정책은 여전히 프록시 헤더를 믿지 않는다)."""
+    try:
+        return json.loads(cf_visitor or "").get("scheme") == "http"
+    except (ValueError, AttributeError):
+        return False
 
 
 class RateLimiter:
