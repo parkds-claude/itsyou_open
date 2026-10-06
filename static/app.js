@@ -138,11 +138,13 @@ function makeChip(label, id, selected, thumbId) {
   thumb.className = "preset-thumb";
   thumb.alt = label;
   if (thumbId) {
-    thumb.src = `/static/presets/${thumbId}.jpg`;
+    // 작은 미리보기(make_thumbs.py 가 만든 240px WebP)를 먼저 받고, 없으면 원본 → svg → 기본 그림 순으로 물러난다.
+    const fallbacks = [`/static/presets/${thumbId}.jpg`, `/static/presets/${thumbId}.svg`, "/static/presets/random_thumb.svg"];
     thumb.onerror = () => {
-      thumb.onerror = () => { thumb.src = "/static/presets/random_thumb.svg"; };
-      thumb.src = `/static/presets/${thumbId}.svg`;
+      if (fallbacks.length) thumb.src = fallbacks.shift();
+      else thumb.onerror = null;
     };
+    thumb.src = `/static/presets/thumb/${thumbId}.webp`;
   } else {
     thumb.src = "/static/presets/random_thumb.svg";
     thumb.onerror = () => {};
