@@ -1,4 +1,5 @@
 import json, os, stat, importlib
+import pytest
 import config_store as cs
 
 def _reset(tmp_path, monkeypatch):
@@ -53,3 +54,45 @@ def test_reserve_usage_respects_cap_and_rollback(tmp_path, monkeypatch):
     # 롤백 후 다시 한 칸 예약 가능
     cs.release_usage("2026-06-15")
     assert cs.reserve_usage("2026-06-15", 2) is True
+
+
+# ── 원격 기기용 공용 비밀번호 ──
+
+def test_kiosk_pin_roundtrip_and_clear(tmp_path, monkeypatch):
+    _reset(tmp_path, monkeypatch)
+    monkeypatch.delenv("ITSYOU_KIOSK_PIN", raising=False)
+    assert cs.get_kiosk_pin() == ""            # 기본은 꺼짐
+    cs.set_kiosk_pin("2468")
+    assert cs.get_kiosk_pin() == "2468"
+    cs.set_kiosk_pin("")
+    assert cs.get_kiosk_pin() == ""
+
+
+def test_kiosk_pin_must_be_4_to_12_digits(tmp_path, monkeypatch):
+    _reset(tmp_path, monkeypatch)
+    for bad in ("12", "abcd", "12a4", "1" * 13, " 1 2 "):
+        with pytest.raises(ValueError):
+            cs.set_kiosk_pin(bad)
+
+
+def test_kiosk_pin_env_overrides_file(tmp_path, monkeypatch):
+    _reset(tmp_path, monkeypatch)
+    cs.set_kiosk_pin("2468")
+    monkeypatch.setenv("ITSYOU_KIOSK_PIN", "1357")
+    assert cs.get_kiosk_pin() == "1357"
+
+
+def test_kiosk_pin_keeps_other_settings_and_file_mode(tmp_path, monkeypatch):
+    _reset(tmp_path, monkeypatch)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    cs.set_key("gemini", "k-123")
+    cs.set_kiosk_pin("2468")
+    assert cs.get_key("gemini") == "k-123"
+    assert stat.S_IMODE(os.stat(cs._CONFIG).st_mode) == 0o600
+
+
+def test_session_secret_is_generated_once(tmp_path, monkeypatch):
+    _reset(tmp_path, monkeypatch)
+    a = cs.get_or_create_session_secret()
+    assert len(a) >= 32
+    assert cs.get_or_create_session_secret() == a

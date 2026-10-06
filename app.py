@@ -52,6 +52,22 @@ app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 _rate = sec.RateLimiter(per_ip_per_min=5, global_per_min=30)
 
+# 원격 기기용 공용 비밀번호: 통과한 기기를 30일 기억한다(쿠키). 틀린 시도는 전체 합산으로 제한한다.
+_KIOSK_COOKIE = "itsyou_kiosk"
+_KIOSK_SESSION_SECONDS = 30 * 24 * 3600
+_pin_guard = sec.PinGuard()
+
+
+def _has_kiosk_session(pin: str) -> bool:
+    token = request.cookies.get(_KIOSK_COOKIE, "")
+    if not pin or not token:
+        return False
+    return sec.kiosk_token_ok(token, cs.get_or_create_session_secret(), pin, _KIOSK_SESSION_SECONDS)
+
+
+def _is_local() -> bool:
+    return sec.is_local(request.remote_addr, sec.came_through_proxy(request.headers))
+
 
 @app.before_request
 def _force_https():
@@ -68,7 +84,17 @@ def _force_https():
 def _gate():
     if request.path.startswith("/static/"):
         return None
-    if not sec.is_allowed(request.path, request.remote_addr):
+    pin = cs.get_kiosk_pin()
+    proxied = sec.came_through_proxy(request.headers)
+    session_ok = _has_kiosk_session(pin)
+    # 공용 비밀번호가 걸려 있으면: 믿는 출처(이 컴퓨터·신뢰 IP)도 아니고 비밀번호도 안 넣은 기기에는
+    # 사진 받기 같은 열린 경로만 내주고, 첫 화면 자리에는 비밀번호 화면을 보여 준다.
+    if (pin and not session_ok and not sec.is_trusted(request.remote_addr, proxied)
+            and not sec.is_open_without_pin(request.path)):
+        if request.method == "GET" and request.path == "/":
+            return render_template("pin.html")
+        return jsonify({"error": "pin required"}), 401
+    if not sec.is_allowed(request.path, request.remote_addr, proxied=proxied, kiosk_session=session_ok):
         return jsonify({"error": "forbidden"}), 403
 
 
@@ -83,6 +109,25 @@ def _no_cache_html(resp):
 @app.get("/")
 def index():
     return render_template("index.html")
+
+
+@app.post("/pin")
+def pin_login():
+    pin = cs.get_kiosk_pin()
+    if not pin:
+        return jsonify({"error": "not found"}), 404
+    if not _pin_guard.begin():
+        return jsonify({"error": "locked"}), 429
+    d = request.get_json(silent=True)
+    given = d.get("pin") if isinstance(d, dict) else None
+    if not isinstance(given, str) or not hmac.compare_digest(given.encode(), pin.encode()):
+        return jsonify({"error": "wrong pin"}), 401
+    _pin_guard.succeeded()
+    resp = jsonify({"ok": True})
+    resp.set_cookie(_KIOSK_COOKIE, sec.make_kiosk_token(cs.get_or_create_session_secret(), pin),
+                    max_age=_KIOSK_SESSION_SECONDS, httponly=True, samesite="Lax", path="/",
+                    secure=request.is_secure or sec.visitor_on_https(request.headers))
+    return resp
 
 
 @app.get("/sw.js")
@@ -319,7 +364,7 @@ def event_logo():
 def _admin_auth(f):
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-        if request.remote_addr not in sec._LOCALHOST:
+        if not _is_local():
             return jsonify({"error": "forbidden"}), 403
         if not hmac.compare_digest(request.headers.get("X-Admin-Key", ""),
                                    cs.get_or_create_admin_key()):
@@ -335,7 +380,7 @@ def admin_page():
 
 @app.get("/admin/api/auth")
 def admin_auth_check():
-    if request.remote_addr not in sec._LOCALHOST:
+    if not _is_local():
         return jsonify({"error": "forbidden"}), 403
     if not hmac.compare_digest(request.headers.get("X-Admin-Key", ""),
                                cs.get_or_create_admin_key()):

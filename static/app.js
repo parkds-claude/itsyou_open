@@ -256,6 +256,7 @@ async function uploadSnap(blob) {
   try {
     const resp = await fetch("/snap", { method: "POST", body: form, signal: ctrl.signal });
     clearTimeout(tid);
+    if (resp.status === 401) { location.reload(); return; }   // 비밀번호 기억 기간이 끝났다 → 비밀번호 화면으로
     if (!resp.ok) throw new Error(`서버 오류 ${resp.status}`);
     const data = await resp.json();
 

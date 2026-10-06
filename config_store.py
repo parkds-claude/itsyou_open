@@ -83,6 +83,36 @@ def get_or_create_admin_key() -> str:
     return k
 
 
+def get_kiosk_pin() -> str:
+    """원격 기기(터널·같은 와이파이)용 공용 비밀번호. 환경변수 ITSYOU_KIOSK_PIN 이 파일보다 우선. 없으면 ''(기능 꺼짐)."""
+    env = os.environ.get("ITSYOU_KIOSK_PIN", "").strip()
+    return env or str(_config().get("kiosk_pin", "")).strip()
+
+
+def set_kiosk_pin(pin: str) -> None:
+    """숫자 4~12자리. 빈 문자열이면 비밀번호를 없앤다(기능 끔)."""
+    pin = pin.strip()
+    if pin and not (pin.isascii() and pin.isdigit() and 4 <= len(pin) <= 12):
+        raise ValueError("pin must be 4-12 digits")
+    cfg = _config()
+    if pin:
+        cfg["kiosk_pin"] = pin
+    else:
+        cfg.pop("kiosk_pin", None)
+    _write_600(_CONFIG, cfg)
+
+
+def get_or_create_session_secret() -> str:
+    """비밀번호를 통과한 기기에 주는 표(쿠키)를 서명하는 서버 열쇠. 한 번 만들어 계속 쓴다."""
+    cfg = _config()
+    k = cfg.get("session_secret")
+    if not k:
+        k = secrets.token_hex(32)
+        cfg["session_secret"] = k
+        _write_600(_CONFIG, cfg)
+    return k
+
+
 def incr_usage(day: str) -> int:
     # 일일 상한은 과금 가드이므로 read-modify-write를 원자적으로 보호
     with _USAGE_LOCK:

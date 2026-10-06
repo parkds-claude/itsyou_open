@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>itsyou</title>
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="stylesheet" href="/static/style.css?v=4">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- 원격 기기용 비밀번호 화면 — 모양은 키 설정 화면(#screen-setup)을 그대로 쓴다 -->
+  <div id="screen-setup" class="screen active">
+    <form id="pin-form" class="setup-wrap" autocomplete="off">
+      <h1 class="setup-title">itsyou</h1>
+      <p class="setup-sub">비밀번호를 입력하세요.</p>
+      <input id="pin" class="setup-input" type="password" inputmode="numeric" pattern="[0-9]*"
+             maxlength="12" autocomplete="off" aria-label="비밀번호" autofocus>
+      <button class="setup-btn" type="submit">들어가기</button>
+      <p id="pin-msg" class="setup-msg" role="alert"></p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("pin-form");
+    const pin = document.getElementById("pin");
+    const msg = document.getElementById("pin-msg");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!pin.value) return;
+      msg.textContent = "확인 중...";
+      let r;
+      try {
+        r = await fetch("/pin", {
+          method: "POST", headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({pin: pin.value}),
+        });
+      } catch {
+        msg.textContent = "연결에 실패했습니다. 다시 시도해 주세요.";
+        return;
+      }
+      if (r.ok) { location.replace("/"); return; }
+      pin.value = "";
+      msg.textContent = r.status === 429
+        ? "여러 번 틀려 잠시 잠겼습니다. 15분 뒤에 다시 시도해 주세요."
+        : "비밀번호가 맞지 않습니다.";
+    });
+  </script>
+</body>
+</html>
