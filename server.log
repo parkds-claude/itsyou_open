@@ -2966,3 +2966,4 @@
 127.0.0.1 - - [08/Oct/2026 23:09:52] "[31m[1mGET /test/wp-includes/wlwmanifest.xml HTTP/1.1[0m" 401 -
 127.0.0.1 - - [08/Oct/2026 23:09:53] "[31m[1mGET /site/wp-includes/wlwmanifest.xml HTTP/1.1[0m" 401 -
 127.0.0.1 - - [08/Oct/2026 23:09:54] "[31m[1mGET /cms/wp-includes/wlwmanifest.xml HTTP/1.1[0m" 401 -
+127.0.0.1 - - [09/Oct/2026 06:51:18] "[31m[1mGET /.git/config HTTP/1.1[0m" 401 -
