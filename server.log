@@ -3670,3 +3670,5 @@
 127.0.0.1 - - [10/Oct/2026 10:36:58] "[31m[1mGET /ai/config.json HTTP/1.1[0m" 401 -
 127.0.0.1 - - [10/Oct/2026 10:36:59] "[31m[1mGET /llm/config.yaml HTTP/1.1[0m" 401 -
 127.0.0.1 - - [10/Oct/2026 10:36:59] "[31m[1mGET /llm/credentials HTTP/1.1[0m" 401 -
+127.0.0.1 - - [10/Oct/2026 11:46:36] "[32mGET /.well-known/acme-challenge/verify HTTP/1.1[0m" 301 -
+127.0.0.1 - - [10/Oct/2026 11:46:36] "[31m[1mGET /.well-known/acme-challenge/verify HTTP/1.1[0m" 401 -
