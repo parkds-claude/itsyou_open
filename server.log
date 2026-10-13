@@ -3683,3 +3683,4 @@
  * Running on http://127.0.0.1:5080
  * Running on http://192.168.0.165:5080
 [33mPress CTRL+C to quit[0m
+127.0.0.1 - - [13/Oct/2026 17:52:43] "[31m[1mGET /.env HTTP/1.1[0m" 401 -
