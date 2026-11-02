@@ -3695,3 +3695,6 @@
  * Running on http://127.0.0.1:5080
  * Running on http://192.168.0.181:5080
 [33mPress CTRL+C to quit[0m
+127.0.0.1 - - [02/Nov/2026 12:09:15] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
+127.0.0.1 - - [02/Nov/2026 12:10:15] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
+127.0.0.1 - - [02/Nov/2026 12:10:20] "GET / HTTP/1.1" 200 -
