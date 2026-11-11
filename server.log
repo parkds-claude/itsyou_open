@@ -3729,3 +3729,9 @@
 127.0.0.1 - - [11/Nov/2026 13:52:31] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
 127.0.0.1 - - [11/Nov/2026 13:53:31] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
 127.0.0.1 - - [11/Nov/2026 13:54:31] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
+127.0.0.1 - - [11/Nov/2026 13:55:31] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
+127.0.0.1 - - [11/Nov/2026 13:56:31] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
+127.0.0.1 - - [11/Nov/2026 13:57:31] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
+127.0.0.1 - - [11/Nov/2026 13:58:31] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
+127.0.0.1 - - [11/Nov/2026 13:59:31] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
+127.0.0.1 - - [11/Nov/2026 14:00:31] "[33mGET /__resource_guard_probe__ HTTP/1.1[0m" 404 -
